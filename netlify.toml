@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Ensure blog list/details are never cached at the CDN level so newly published posts
+# appear without requiring a redeploy.
+[[headers]]
+  for = "/blog"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+
+[[headers]]
+  for = "/blog/*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+
+
