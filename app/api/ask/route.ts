@@ -29,14 +29,27 @@ function extractText(data: unknown): string {
 
 export async function POST(req: Request) {
   try {
+    // Netlify provides client IP in this header:
+    // https://docs.netlify.com/edge-functions/headers-and-cookies/#netlify-and-x-forwarded-for
     const ip =
+      req.headers.get("x-nf-client-connection-ip") ||
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       req.headers.get("x-real-ip") ||
+      req.headers.get("cf-connecting-ip") ||
       "unknown";
 
-    const rl = rateLimit(ip, 12, 60_000); // 12 req / minute / IP
+    // If we can't reliably identify the client, fall back to UA to avoid global 429s.
+    const rlKey =
+      ip !== "unknown"
+        ? ip
+        : `${req.headers.get("user-agent") || "ua"}|${req.headers.get("accept-language") || "lang"}`;
+
+    const rl = rateLimit(rlKey, 30, 60_000); // 30 req / minute / client
     if (!rl.ok) {
-      return NextResponse.json({ ok: false, error: "RATE_LIMITED" }, { status: 429 });
+      return NextResponse.json(
+        { ok: false, error: "RATE_LIMITED", message: "Too many requests. Please wait a minute." },
+        { status: 429 },
+      );
     }
 
     const body = (await req.json()) as { question?: unknown };
