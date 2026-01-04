@@ -74,7 +74,12 @@ export async function POST(req: Request) {
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {
       return NextResponse.json(
-        { ok: false, error: "GEMINI_FAILED", status: res.status },
+        {
+          ok: false,
+          error: "GEMINI_FAILED",
+          status: res.status,
+          message: (json as any)?.error?.message || undefined,
+        },
         { status: 502 },
       );
     }

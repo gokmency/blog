@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 export default function AskPage() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
 
   const ask = async () => {
@@ -13,19 +14,24 @@ export default function AskPage() {
     if (!q) return;
     setStatus("loading");
     setAnswer("");
+    setError("");
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ question: q }),
       });
-      const json = (await res.json()) as { ok: boolean; answer?: string };
-      if (!res.ok || !json.ok) throw new Error("FAILED");
+      const json = (await res.json()) as { ok: boolean; answer?: string; error?: string; message?: string };
+      if (!res.ok || !json.ok) {
+        const detail = json.message || json.error || `HTTP_${res.status}`;
+        throw new Error(detail);
+      }
       setAnswer(json.answer || "");
       setStatus("idle");
-    } catch {
+    } catch (e) {
       setStatus("error");
-      setAnswer("Could not answer right now.");
+      const msg = e instanceof Error ? e.message : "Could not answer right now.";
+      setError(msg);
     }
   };
 
@@ -60,6 +66,10 @@ export default function AskPage() {
         <div className="mt-6 font-sans text-[12px] text-[var(--muted)]">
           Examples: “What do you write about?” · “How can I contact you?” · “What’s the purpose of this site?”
         </div>
+
+        {error ? (
+          <div className="mt-8 font-sans text-[12px] text-[var(--muted)]">Error: {error}</div>
+        ) : null}
 
         {answer ? (
           <div className="mt-10 font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
