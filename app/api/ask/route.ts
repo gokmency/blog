@@ -27,6 +27,21 @@ function extractText(data: unknown): string {
   return "";
 }
 
+function isGreetingQuestion(q: string) {
+  const s = q.trim().toLowerCase();
+  return (
+    /^(selam|merhaba|sa|hey|hi|hello)\b/.test(s) ||
+    /\b(kimsin|sen kimsin|who are you|what are you)\b/.test(s)
+  );
+}
+
+function stripGreeting(answer: string) {
+  return answer
+    .replace(/^selam!\s*ben\s+gökmen\s+çelik'in\s+dijital\s+zihniyim\.?\s*/i, "")
+    .replace(/^selam!\s*/i, "")
+    .trim();
+}
+
 export async function POST(req: Request) {
   try {
     // Netlify provides client IP in this header:
@@ -98,7 +113,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const answer = extractText(json) || "I don't know based on what I have.";
+    let answer = extractText(json) || "I don't know based on what I have.";
+    if (!isGreetingQuestion(question)) {
+      answer = stripGreeting(answer);
+    }
     return NextResponse.json({ ok: true, answer });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Unknown error";

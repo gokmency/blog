@@ -1,6 +1,7 @@
 import { PostFeed } from "@/components/PostFeed";
 import { getRecentPosts } from "@/lib/hashnode/api";
 import { Hero } from "@/components/Hero";
+import { AskBar } from "@/components/AskBar";
 
 export default async function Home() {
   const posts = await getRecentPosts(20);
@@ -8,6 +9,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <AskBar />
       <PostFeed posts={posts} />
     </>
   );
