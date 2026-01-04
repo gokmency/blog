@@ -3,6 +3,13 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug } from "@/lib/hashnode/api";
 
+function normalizeHashnodeMarkdown(md: string) {
+  // Hashnode markdown sometimes includes non-standard attrs inside image URLs:
+  // ![](https://...png align="center")
+  // react-markdown treats that as part of the URL, so the image fails to load.
+  return md.replace(/\((https?:\/\/[^)\s]+)\s+align="[^"]*"\)/g, "($1)");
+}
+
 export default async function BlogPostPage({
   params,
 }: {
@@ -13,7 +20,7 @@ export default async function BlogPostPage({
 
   if (!post) return notFound();
 
-  const markdown = post.content?.markdown ?? "";
+  const markdown = normalizeHashnodeMarkdown(post.content?.markdown ?? "");
 
   return (
     <article className="py-16">
