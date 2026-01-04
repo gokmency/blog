@@ -58,4 +58,12 @@ export const SUBSCRIBE_TO_NEWSLETTER = /* GraphQL */ `
   }
 `;
 
+export const UNSUBSCRIBE_FROM_NEWSLETTER = /* GraphQL */ `
+  mutation UnsubscribeFromNewsletter($input: UnsubscribeFromNewsletterInput!) {
+    unsubscribeFromNewsletter(input: $input) {
+      status
+    }
+  }
+`;
+
 

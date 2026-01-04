@@ -1,5 +1,11 @@
 import { hashnodeRequest } from "./client";
-import { GET_POST_BY_SLUG, GET_POSTS, GET_PUBLICATION_ID, SUBSCRIBE_TO_NEWSLETTER } from "./queries";
+import {
+  GET_POST_BY_SLUG,
+  GET_POSTS,
+  GET_PUBLICATION_ID,
+  SUBSCRIBE_TO_NEWSLETTER,
+  UNSUBSCRIBE_FROM_NEWSLETTER,
+} from "./queries";
 import type {
   GetPostBySlugData,
   GetPostsData,
@@ -8,6 +14,7 @@ import type {
   HashnodePostWithContent,
   NewsletterSubscribeStatus,
   SubscribeToNewsletterData,
+  UnsubscribeFromNewsletterData,
 } from "./types";
 
 export async function getRecentPosts(first = 20): Promise<HashnodePost[]> {
@@ -40,6 +47,15 @@ export async function subscribeToNewsletter(email: string): Promise<NewsletterSu
     { revalidate: 0 },
   );
   return data.subscribeToNewsletter.status;
+}
+
+export async function unsubscribeFromNewsletter(email: string): Promise<NewsletterSubscribeStatus> {
+  const publicationId = await getPublicationId();
+  const data = await hashnodeRequest<
+    UnsubscribeFromNewsletterData,
+    { input: { publicationId: string; email: string } }
+  >(UNSUBSCRIBE_FROM_NEWSLETTER, { input: { publicationId, email } }, { revalidate: 0 });
+  return data.unsubscribeFromNewsletter.status;
 }
 
 

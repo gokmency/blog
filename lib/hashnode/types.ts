@@ -48,4 +48,10 @@ export type SubscribeToNewsletterData = {
   };
 };
 
+export type UnsubscribeFromNewsletterData = {
+  unsubscribeFromNewsletter: {
+    status: NewsletterSubscribeStatus;
+  };
+};
+
 

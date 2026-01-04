@@ -18,16 +18,18 @@ export function Newsletter() {
     confirmed: "You’re subscribed (CONFIRMED).",
     error: "Something went wrong. Please try again.",
     resend: "Resend",
+    resent:
+      "Resent confirmation email. It may take 1–5 min. Check Spam/Promotions. If it still doesn’t arrive, try Gmail/Outlook.",
   };
 
-  const submit = async (nextEmail: string) => {
+  const submit = async (nextEmail: string, mode: "subscribe" | "resend" = "subscribe") => {
     setStatus("loading");
     setMessage("");
     try {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: nextEmail }),
+        body: JSON.stringify({ email: nextEmail, mode }),
       });
       const json = (await res.json()) as {
         ok: boolean;
@@ -39,7 +41,8 @@ export function Newsletter() {
 
       setLastEmail(nextEmail);
       setStatus("success");
-      setMessage(json.status === "CONFIRMED" ? copy.confirmed : copy.pending);
+      if (json.status === "CONFIRMED") setMessage(copy.confirmed);
+      else setMessage(mode === "resend" ? copy.resent : copy.pending);
     } catch {
       setStatus("error");
       setMessage(copy.error);
@@ -81,7 +84,7 @@ export function Newsletter() {
           {status === "success" && lastEmail ? (
             <button
               type="button"
-              onClick={() => void submit(lastEmail)}
+              onClick={() => void submit(lastEmail, "resend")}
               className="shrink-0 font-sans text-[12px] text-[var(--foreground)] hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4 disabled:opacity-60"
               disabled={isLoading}
             >
