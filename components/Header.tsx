@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ContactModal } from "@/components/ContactModal";
 import { Moon, Sun } from "lucide-react";
 
 export function Header() {
   const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage } = useLanguage();
   const [contactOpen, setContactOpen] = useState(false);
 
   return (
@@ -20,18 +22,27 @@ export function Header() {
       </Link>
 
       <nav className="flex items-center gap-6 font-sans text-[14px] text-[var(--foreground)]">
-        <Link href="/" className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4">
+        <Link href="/blog" className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4">
           Blog
         </Link>
         <Link href="/about" className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4">
-          About
+          {language === "tr" ? "Hakkımda" : "About"}
         </Link>
+        <button
+          type="button"
+          onClick={toggleLanguage}
+          className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
+          aria-label="Toggle language"
+        >
+          <span className={language === "en" ? "font-semibold" : ""}>EN</span> /{" "}
+          <span className={language === "tr" ? "font-semibold" : ""}>TR</span>
+        </button>
         <button
           type="button"
           onClick={() => setContactOpen(true)}
           className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
         >
-          Contact
+          {language === "tr" ? "İletişim" : "Contact"}
         </button>
         <button
           type="button"

@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function AskBar() {
+  const { language } = useLanguage();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -43,7 +45,7 @@ export function AskBar() {
           onKeyDown={(e) => {
             if (e.key === "Enter") void ask();
           }}
-          placeholder="Hakkımda soru sor…"
+          placeholder={language === "tr" ? "Hakkımda soru sor…" : "Ask about me…"}
           className="h-10 w-full bg-transparent font-sans text-[16px] text-[var(--foreground)] outline-none placeholder:text-[var(--muted)]"
         />
         <button
@@ -52,12 +54,14 @@ export function AskBar() {
           disabled={status === "loading" || !question.trim()}
           className="h-10 shrink-0 rounded-none bg-[var(--accent)] px-4 font-sans text-[14px] text-white hover:bg-[var(--accent-dark)] disabled:opacity-60"
         >
-          {status === "loading" ? "…" : "Sor"}
+          {status === "loading" ? "…" : language === "tr" ? "Sor" : "Ask"}
         </button>
       </div>
 
       <div className="mt-3 font-sans text-[12px] text-[var(--muted)]">
-        Örnek: “Ne iş yapıyorsun?” · “GRAINZ nedir?” · “Hangi teknolojilerle çalışıyorsun?”
+        {language === "tr"
+          ? 'Örnek: “Ne iş yapıyorsun?” · “GRAINZ nedir?” · “Hangi teknolojilerle çalışıyorsun?”'
+          : 'Examples: “What do you do?” · “What is GRAINZ?” · “What technologies do you use?”'}
       </div>
 
       {error ? (

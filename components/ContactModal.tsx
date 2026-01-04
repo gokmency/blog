@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function ContactModal({
   open,
@@ -10,6 +11,7 @@ export function ContactModal({
   open: boolean;
   onClose: () => void;
 }) {
+  const { language } = useLanguage();
   const titleId = useId();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -53,13 +55,13 @@ export function ContactModal({
       const json = (await res.json()) as { ok: boolean; error?: string; message?: string };
       if (!res.ok || !json.ok) throw new Error(json.message || json.error || "FAILED");
       setStatus("sent");
-      setNote("Sent.");
+      setNote(language === "tr" ? "Gönderildi." : "Sent.");
       setEmail("");
       setMessage("");
       setWebsite("");
     } catch {
       setStatus("error");
-      setNote("Could not send. Please try again.");
+      setNote(language === "tr" ? "Gönderilemedi. Lütfen tekrar dene." : "Could not send. Please try again.");
     }
   };
 
@@ -82,10 +84,10 @@ export function ContactModal({
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
               <div id={titleId} className="font-serif text-[18px]">
-                Contact
+                {language === "tr" ? "İletişim" : "Contact"}
               </div>
               <div className="mt-1 font-sans text-[12px] text-[var(--muted)]">
-                Leave an email and a short message.
+                {language === "tr" ? "Email ve kısa bir mesaj bırak." : "Leave an email and a short message."}
               </div>
             </div>
             <button
@@ -114,13 +116,13 @@ export function ContactModal({
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="Email"
+              placeholder={language === "tr" ? "Email" : "Email"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="h-11 w-full rounded-none border border-[var(--line)] bg-transparent px-3 font-sans text-[14px] text-[var(--foreground)] outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:ring-0"
             />
             <textarea
-              placeholder="Message"
+              placeholder={language === "tr" ? "Mesaj" : "Message"}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={6}
@@ -134,7 +136,7 @@ export function ContactModal({
                 disabled={status === "sending" || !email.trim() || !message.trim()}
                 className="h-10 rounded-none bg-[var(--accent)] px-4 font-sans text-[14px] text-white hover:bg-[var(--accent-dark)] disabled:opacity-60"
               >
-                {status === "sending" ? "Sending…" : "Send"}
+                {status === "sending" ? (language === "tr" ? "Gönderiliyor…" : "Sending…") : language === "tr" ? "Gönder" : "Send"}
               </button>
             </div>
           </div>
