@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { ContactModal } from "@/components/ContactModal";
 import { Moon, Sun } from "lucide-react";
 
 export function Header() {
   const { theme, toggleTheme } = useTheme();
+  const [contactOpen, setContactOpen] = useState(false);
 
   return (
     <header className="flex items-baseline justify-between py-12">
@@ -25,6 +28,13 @@ export function Header() {
         </Link>
         <button
           type="button"
+          onClick={() => setContactOpen(true)}
+          className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
+        >
+          Contact
+        </button>
+        <button
+          type="button"
           onClick={toggleTheme}
           className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] hover:border-[var(--accent)]"
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
@@ -36,6 +46,8 @@ export function Header() {
           )}
         </button>
       </nav>
+
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </header>
   );
 }

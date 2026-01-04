@@ -11,10 +11,17 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Newsletter
+## Contact (Resend)
 
-This project uses **Hashnode’s built-in newsletter** via the GraphQL mutation `subscribeToNewsletter`.
-Make sure newsletter is enabled for your publication in Hashnode settings.
+The site has a minimal contact popup that sends you an email via Resend.
+
+Set these environment variables in Vercel (Project → Settings → Environment Variables) and locally in `.env.local`:
+
+```bash
+RESEND_API_KEY="your_resend_api_key"
+CONTACT_TO_EMAIL="you@yourdomain.com"
+CONTACT_FROM_EMAIL="Contact <contact@gokmens.com>"
+```
 
 ## Learn More
 
