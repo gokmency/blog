@@ -50,20 +50,4 @@ export const GET_POST_BY_SLUG = /* GraphQL */ `
   }
 `;
 
-export const SUBSCRIBE_TO_NEWSLETTER = /* GraphQL */ `
-  mutation SubscribeToNewsletter($input: SubscribeToNewsletterInput!) {
-    subscribeToNewsletter(input: $input) {
-      status
-    }
-  }
-`;
-
-export const UNSUBSCRIBE_FROM_NEWSLETTER = /* GraphQL */ `
-  mutation UnsubscribeFromNewsletter($input: UnsubscribeFromNewsletterInput!) {
-    unsubscribeFromNewsletter(input: $input) {
-      status
-    }
-  }
-`;
-
 

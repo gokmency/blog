@@ -3,8 +3,6 @@ import {
   GET_POST_BY_SLUG,
   GET_POSTS,
   GET_PUBLICATION_ID,
-  SUBSCRIBE_TO_NEWSLETTER,
-  UNSUBSCRIBE_FROM_NEWSLETTER,
 } from "./queries";
 import type {
   GetPostBySlugData,
@@ -12,9 +10,6 @@ import type {
   GetPublicationIdData,
   HashnodePost,
   HashnodePostWithContent,
-  NewsletterSubscribeStatus,
-  SubscribeToNewsletterData,
-  UnsubscribeFromNewsletterData,
 } from "./types";
 
 export async function getRecentPosts(first = 20): Promise<HashnodePost[]> {
@@ -37,25 +32,6 @@ export async function getPublicationId(): Promise<string> {
   const id = data.publication?.id;
   if (!id) throw new Error("Hashnode publication not found for host");
   return id;
-}
-
-export async function subscribeToNewsletter(email: string): Promise<NewsletterSubscribeStatus> {
-  const publicationId = await getPublicationId();
-  const data = await hashnodeRequest<SubscribeToNewsletterData, { input: { publicationId: string; email: string } }>(
-    SUBSCRIBE_TO_NEWSLETTER,
-    { input: { publicationId, email } },
-    { revalidate: 0 },
-  );
-  return data.subscribeToNewsletter.status;
-}
-
-export async function unsubscribeFromNewsletter(email: string): Promise<NewsletterSubscribeStatus> {
-  const publicationId = await getPublicationId();
-  const data = await hashnodeRequest<
-    UnsubscribeFromNewsletterData,
-    { input: { publicationId: string; email: string } }
-  >(UNSUBSCRIBE_FROM_NEWSLETTER, { input: { publicationId, email } }, { revalidate: 0 });
-  return data.unsubscribeFromNewsletter.status;
 }
 
 

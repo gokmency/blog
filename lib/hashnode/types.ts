@@ -40,18 +40,5 @@ export type GetPostBySlugData = {
   } | null;
 };
 
-export type NewsletterSubscribeStatus = "PENDING" | "CONFIRMED";
-
-export type SubscribeToNewsletterData = {
-  subscribeToNewsletter: {
-    status: NewsletterSubscribeStatus;
-  };
-};
-
-export type UnsubscribeFromNewsletterData = {
-  unsubscribeFromNewsletter: {
-    status: NewsletterSubscribeStatus;
-  };
-};
 
 

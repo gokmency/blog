@@ -2,51 +2,15 @@
 
 import { useState } from "react";
 
+const SUBSTACK_SUBSCRIBE_URL = "https://substack.com/@gokmenceliks";
+
 export function Newsletter() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState<string>("");
-  const [lastEmail, setLastEmail] = useState<string>("");
-  const isLoading = status === "loading";
 
   const copy = {
     placeholder: "Email address",
     button: "Subscribe",
     hint: "Get an email when I publish something new.",
-    pending:
-      "Confirmation email sent (PENDING). It may take 1–5 min. Check Spam/Promotions. If it doesn’t arrive, resend or try Gmail.",
-    confirmed: "You’re subscribed (CONFIRMED).",
-    error: "Something went wrong. Please try again.",
-    resend: "Resend",
-    resent:
-      "Resent confirmation email. It may take 1–5 min. Check Spam/Promotions. If it still doesn’t arrive, try Gmail/Outlook.",
-  };
-
-  const submit = async (nextEmail: string, mode: "subscribe" | "resend" = "subscribe") => {
-    setStatus("loading");
-    setMessage("");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: nextEmail, mode }),
-      });
-      const json = (await res.json()) as {
-        ok: boolean;
-        status?: "PENDING" | "CONFIRMED";
-        error?: string;
-        message?: string;
-      };
-      if (!res.ok || !json.ok) throw new Error(json.message || json.error || "FAILED");
-
-      setLastEmail(nextEmail);
-      setStatus("success");
-      if (json.status === "CONFIRMED") setMessage(copy.confirmed);
-      else setMessage(mode === "resend" ? copy.resent : copy.pending);
-    } catch {
-      setStatus("error");
-      setMessage(copy.error);
-    }
   };
 
   return (
@@ -56,9 +20,10 @@ export function Newsletter() {
         className="flex w-full flex-col gap-3 sm:flex-row"
         onSubmit={(e) => {
           e.preventDefault();
-          const nextEmail = email.trim();
-          if (!nextEmail.length) return;
-          void submit(nextEmail);
+          const v = email.trim();
+          const url = new URL(SUBSTACK_SUBSCRIBE_URL);
+          if (v) url.searchParams.set("email", v);
+          window.open(url.toString(), "_blank", "noopener,noreferrer");
         }}
       >
         <input
@@ -72,27 +37,14 @@ export function Newsletter() {
         />
         <button
           type="submit"
-          disabled={isLoading}
-          className="h-11 shrink-0 rounded-none bg-[var(--accent)] px-5 font-sans text-[14px] text-white hover:bg-[var(--accent-dark)] disabled:opacity-60"
+          className="h-11 shrink-0 rounded-none bg-[var(--accent)] px-5 font-sans text-[14px] text-white hover:bg-[var(--accent-dark)]"
         >
           {copy.button}
         </button>
       </form>
-      {message ? (
-        <div className="mt-3 flex items-baseline justify-between gap-4">
-          <p className="font-sans text-[12px] text-[var(--muted)]">{message}</p>
-          {status === "success" && lastEmail ? (
-            <button
-              type="button"
-              onClick={() => void submit(lastEmail, "resend")}
-              className="shrink-0 font-sans text-[12px] text-[var(--foreground)] hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4 disabled:opacity-60"
-              disabled={isLoading}
-            >
-              {copy.resend}
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+      <p className="mt-3 font-sans text-[12px] text-[var(--muted)]">
+        Opens Substack to confirm subscription.
+      </p>
     </section>
   );
 }
