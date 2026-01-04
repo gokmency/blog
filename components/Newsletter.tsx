@@ -1,38 +1,24 @@
 "use client";
 
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useState } from "react";
 
 export function Newsletter() {
-  const { language } = useLanguage();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState<string>("");
   const [lastEmail, setLastEmail] = useState<string>("");
   const isLoading = status === "loading";
 
-  const copy =
-    language === "tr"
-      ? {
-          placeholder: "E-posta adresin",
-          button: "Abone ol",
-          hint: "Yeni yazılar geldiğinde haber vereyim.",
-          pending:
-            "Onay e-postası gönderildi (PENDING). 1-5 dk sürebilir. Spam/Promotions klasörünü kontrol et. Gelmezse tekrar gönder ya da Gmail ile dene.",
-          confirmed: "Aboneliğin aktif (CONFIRMED).",
-          error: "Bir şeyler ters gitti. Tekrar dener misin?",
-          resend: "Tekrar gönder",
-        }
-      : {
-          placeholder: "Email address",
-          button: "Subscribe",
-          hint: "Get an email when I publish something new.",
-          pending:
-            "Confirmation email sent (PENDING). It may take 1–5 min. Check Spam/Promotions. If it doesn’t arrive, resend or try Gmail.",
-          confirmed: "You’re subscribed (CONFIRMED).",
-          error: "Something went wrong. Please try again.",
-          resend: "Resend",
-        };
+  const copy = {
+    placeholder: "Email address",
+    button: "Subscribe",
+    hint: "Get an email when I publish something new.",
+    pending:
+      "Confirmation email sent (PENDING). It may take 1–5 min. Check Spam/Promotions. If it doesn’t arrive, resend or try Gmail.",
+    confirmed: "You’re subscribed (CONFIRMED).",
+    error: "Something went wrong. Please try again.",
+    resend: "Resend",
+  };
 
   const submit = async (nextEmail: string) => {
     setStatus("loading");

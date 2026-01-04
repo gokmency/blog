@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Moon, Sun } from "lucide-react";
 
 export function Header() {
-  const { language, toggleLanguage } = useLanguage();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -25,16 +23,6 @@ export function Header() {
         <Link href="/about" className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4">
           About
         </Link>
-        <button
-          type="button"
-          onClick={toggleLanguage}
-          className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
-          aria-label="Toggle language"
-        >
-          <span className={language === "en" ? "font-semibold" : ""}>EN</span> /{" "}
-          <span className={language === "tr" ? "font-semibold" : ""}>TR</span>
-        </button>
-
         <button
           type="button"
           onClick={toggleTheme}

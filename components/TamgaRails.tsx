@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { TAMGAS, type TamgaItem } from "@/lib/tamgas/data";
 
 type TooltipState = {
@@ -13,7 +12,6 @@ type TooltipState = {
 } | null;
 
 export function TamgaRails({ items = TAMGAS }: { items?: TamgaItem[] }) {
-  const { language } = useLanguage();
   const [tooltip, setTooltip] = useState<TooltipState>(null);
   const raf = useRef<number | null>(null);
 
@@ -38,7 +36,7 @@ export function TamgaRails({ items = TAMGAS }: { items?: TamgaItem[] }) {
   };
 
   const renderItem = (item: TamgaItem, side: "left" | "right") => {
-    const copy = language === "tr" ? item.tr : item.en;
+    const copy = item.copy;
 
     return (
       <button
@@ -100,8 +98,8 @@ export function TamgaRails({ items = TAMGAS }: { items?: TamgaItem[] }) {
           }}
         >
           <div className="w-[260px] rounded-none border border-[var(--line)] bg-[var(--background)] px-3 py-2 font-sans text-[12px] text-[var(--foreground)] shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-            <div className="mb-1 text-[var(--accent)]">{(language === "tr" ? tooltip.item.tr : tooltip.item.en).title}</div>
-            <div className="text-[var(--muted)]">{(language === "tr" ? tooltip.item.tr : tooltip.item.en).description}</div>
+            <div className="mb-1 text-[var(--accent)]">{tooltip.item.copy.title}</div>
+            <div className="text-[var(--muted)]">{tooltip.item.copy.description}</div>
           </div>
         </div>
       ) : null}

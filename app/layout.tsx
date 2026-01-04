@@ -36,7 +36,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${merriweather.variable} bg-[var(--background)]`}
-      data-theme="dark"
+      data-theme="light"
       suppressHydrationWarning
     >
       <head>
@@ -46,7 +46,7 @@ export default function RootLayout({
         >{`(() => {
   try {
     const t = localStorage.getItem('bgc_theme');
-    const theme = (t === 'light' || t === 'dark') ? t : 'dark';
+    const theme = (t === 'light' || t === 'dark') ? t : 'light';
     document.documentElement.dataset.theme = theme;
   } catch {}
 })();`}</Script>

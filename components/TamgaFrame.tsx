@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { TAMGAS, type TamgaItem } from "@/lib/tamgas/data";
 
 type Corner = "tl" | "tr" | "bl" | "br";
@@ -27,12 +26,11 @@ export function TamgaFrame({
 }: {
   items?: TamgaItem[];
 }) {
-  const { language } = useLanguage();
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const byId = useMemo(() => new Map(items.map((i) => [i.id, i])), [items]);
   const active = activeId ? byId.get(activeId) : null;
-  const activeCopy = active ? (language === "tr" ? active.tr : active.en) : null;
+  const activeCopy = active ? active.copy : null;
 
   // We only render 4 symbols as a minimalist "frame" (one per corner).
   const frameItems = useMemo(() => items.slice(0, 4), [items]);
@@ -44,7 +42,7 @@ export function TamgaFrame({
         {CORNERS.map((corner, idx) => {
           const item = frameItems[idx];
           if (!item) return null;
-          const copy = language === "tr" ? item.tr : item.en;
+          const copy = item.copy;
           const isActive = activeId === item.id;
 
           return (
