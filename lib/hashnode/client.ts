@@ -5,18 +5,25 @@ type GraphQLResponse<TData> = {
   errors?: GraphQLError[];
 };
 
+export type HashnodeRequestOptions = {
+  revalidate?: number;
+  cache?: RequestCache;
+};
+
 export async function hashnodeRequest<TData, TVariables extends Record<string, unknown> | undefined>(
   query: string,
   variables?: TVariables,
-  options?: { revalidate?: number },
+  options?: HashnodeRequestOptions,
 ): Promise<TData> {
+  const useRevalidate = typeof options?.revalidate === "number" && options.revalidate > 0;
   const res = await fetch("https://gql.hashnode.com", {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
     body: JSON.stringify({ query, variables }),
-    next: options?.revalidate ? { revalidate: options.revalidate } : undefined,
+    cache: options?.cache,
+    next: useRevalidate ? { revalidate: options!.revalidate } : undefined,
   });
 
   if (!res.ok) {

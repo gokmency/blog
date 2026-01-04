@@ -1,6 +1,8 @@
 import { PostFeed } from "@/components/PostFeed";
 import { getRecentPosts } from "@/lib/hashnode/api";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogPage() {
   const posts = await getRecentPosts(20);
 
