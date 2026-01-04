@@ -23,6 +23,18 @@ CONTACT_TO_EMAIL="you@yourdomain.com"
 CONTACT_FROM_EMAIL="Contact <contact@gokmens.com>"
 ```
 
+## Ask (Gemini)
+
+This project includes a minimal `/ask` page backed by Gemini (server-side).
+
+Set:
+
+```bash
+GOOGLE_API_KEY="your_google_ai_studio_api_key"
+```
+
+Security note: never hardcode API keys in the repo. If a key was ever pasted into chat or code, rotate it.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -26,6 +26,9 @@ export function Header() {
         <Link href="/about" className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4">
           About
         </Link>
+        <Link href="/ask" className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4">
+          Ask
+        </Link>
         <button
           type="button"
           onClick={() => setContactOpen(true)}
