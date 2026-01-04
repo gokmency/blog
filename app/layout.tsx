@@ -20,6 +20,7 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://gokmens.com"),
   title: {
     default: "Burak Gökmen Çelik",
     template: "%s — Burak Gökmen Çelik",
