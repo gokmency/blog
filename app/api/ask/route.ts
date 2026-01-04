@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { BURAK_PROFILE } from "@/lib/ai/profile";
+import { buildProfilePrompt } from "@/lib/ai/profile";
 
 // Very small in-memory rate limiter (best-effort on serverless).
 const buckets = new Map<string, { count: number; resetAt: number }>();
@@ -64,7 +64,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "NOT_CONFIGURED" }, { status: 500 });
     }
 
-    const prompt = `${BURAK_PROFILE}\n\nUser question:\n${question}\n\nAnswer:`;
+    const system = buildProfilePrompt();
+    const prompt = `${system}\n\nUser question:\n${question}\n\nAnswer:`;
 
     const res = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
