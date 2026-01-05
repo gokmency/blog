@@ -105,12 +105,12 @@ export default function AboutPage() {
       <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">
         {language === "tr" ? "Hakkımda" : "About"}
       </h1>
-      <div className="grid gap-10 md:grid-cols-[220px_1fr] md:items-start">
-        <div className="md:pt-1">
+      <div className="grid gap-10 lg:gap-12 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr] md:items-start">
+        <div className="md:pt-2">
           <Image
             src={samurai}
             alt="Gökmen character"
-            className="mx-auto h-auto w-[200px] select-none md:mx-0 md:w-[220px]"
+            className="mx-auto h-auto w-[260px] select-none md:mx-0 md:w-[280px] lg:w-[320px]"
             priority
           />
         </div>
