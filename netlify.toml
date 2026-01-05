@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && rm -rf .next/dev .next/cache || true"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
