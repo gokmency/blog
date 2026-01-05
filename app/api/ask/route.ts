@@ -37,8 +37,11 @@ function isGreetingQuestion(q: string) {
 
 function stripGreeting(answer: string) {
   return answer
-    .replace(/^selam!\s*ben\s+gökmen\s+çelik'in\s+dijital\s+zihniyim\.?\s*/i, "")
+    // Remove common greeting/boilerplate prefixes the model may prepend.
+    .replace(/^selam!\s*ben\s+gökmen\s+çelik'?in\s+dijital\s+(zihniyim|asistanıyım)\.?\s*/i, "")
     .replace(/^selam!\s*/i, "")
+    .replace(/^bir\s+fikrin\s+varsa\s+paylaş,\s*elimden\s+geldiğince\s+yardımcı\s+olayım\.?\s*/i, "")
+    .replace(/^share\s+your\s+idea,\s*i'?ll\s+help\s+as\s+much\s+as\s+i\s+can\.?\s*/i, "")
     .trim();
 }
 
