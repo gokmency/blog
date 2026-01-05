@@ -11,14 +11,17 @@ export const GET_PUBLICATION_ID = /* GraphQL */ `
 export const GET_POSTS = /* GraphQL */ `
   query GetPosts($host: String!, $first: Int!) {
     publication(host: $host) {
+      id
       posts(first: $first) {
         edges {
           node {
+            id
             title
             slug
             brief
             publishedAt
             tags {
+              id
               slug
               name
             }
@@ -32,16 +35,20 @@ export const GET_POSTS = /* GraphQL */ `
 export const GET_POST_BY_SLUG = /* GraphQL */ `
   query GetPostBySlug($host: String!, $slug: String!) {
     publication(host: $host) {
+      id
       post(slug: $slug) {
+        id
         title
         slug
         brief
         publishedAt
         tags {
+          id
           slug
           name
         }
         content {
+          id
           markdown
           html
         }

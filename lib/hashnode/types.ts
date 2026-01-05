@@ -1,9 +1,11 @@
 export type HashnodeTag = {
+  id: string;
   slug: string;
   name: string;
 };
 
 export type HashnodePost = {
+  id: string;
   title: string;
   slug: string;
   brief?: string | null;
@@ -12,6 +14,7 @@ export type HashnodePost = {
 };
 
 export type HashnodePostContent = {
+  id?: string;
   markdown?: string | null;
   html?: string | null;
 };
@@ -26,6 +29,7 @@ export type GetPublicationIdData = {
 
 export type GetPostsData = {
   publication: {
+    id: string;
     posts: {
       edges: Array<{
         node: HashnodePost;
@@ -36,6 +40,7 @@ export type GetPostsData = {
 
 export type GetPostBySlugData = {
   publication: {
+    id: string;
     post: HashnodePostWithContent | null;
   } | null;
 };
