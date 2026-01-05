@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
+import samurai from "@/assets/samuraibgc.png";
 
 export default function AboutPage() {
   const { language } = useLanguage();
@@ -103,8 +105,18 @@ export default function AboutPage() {
       <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">
         {language === "tr" ? "Hakkımda" : "About"}
       </h1>
-      <div className="max-w-none font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
-        {language === "tr" ? tr : en}
+      <div className="grid gap-10 md:grid-cols-[220px_1fr] md:items-start">
+        <div className="md:pt-1">
+          <Image
+            src={samurai}
+            alt="Gökmen character"
+            className="mx-auto h-auto w-[200px] select-none md:mx-0 md:w-[220px]"
+            priority
+          />
+        </div>
+        <div className="max-w-none font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
+          {language === "tr" ? tr : en}
+        </div>
       </div>
     </section>
   );
