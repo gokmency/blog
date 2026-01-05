@@ -11,18 +11,6 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Contact (Resend)
-
-The site has a minimal contact popup that sends you an email via Resend.
-
-Set these environment variables in Vercel (Project → Settings → Environment Variables) and locally in `.env.local`:
-
-```bash
-RESEND_API_KEY="your_resend_api_key"
-CONTACT_TO_EMAIL="you@yourdomain.com"
-CONTACT_FROM_EMAIL="Contact <contact@gokmens.com>"
-```
-
 ## Ask (Gemini)
 
 This project includes a minimal `/ask` page backed by Gemini (server-side).

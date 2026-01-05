@@ -14,7 +14,6 @@ export type HashnodePost = {
 };
 
 export type HashnodePostContent = {
-  id?: string;
   markdown?: string | null;
   html?: string | null;
 };
