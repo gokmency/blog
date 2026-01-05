@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
-import samurai from "@/assets/samuraibgc.png";
+import samuraiHero from "@/assets/samurai_bgc.png";
 
 export default function AboutPage() {
   const { language } = useLanguage();
@@ -105,18 +105,21 @@ export default function AboutPage() {
       <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">
         {language === "tr" ? "Hakkımda" : "About"}
       </h1>
-      <div className="grid gap-10 lg:gap-12 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr] md:items-start">
-        <div className="md:pt-2">
+      <div className="-mx-6 mb-12">
+        <div className="relative h-[320px] sm:h-[380px] md:h-[460px]">
           <Image
-            src={samurai}
-            alt="Gökmen character"
-            className="mx-auto h-auto w-[260px] select-none md:mx-0 md:w-[280px] lg:w-[320px]"
+            src={samuraiHero}
+            alt="Samurai character"
+            fill
             priority
+            sizes="(max-width: 680px) 100vw, 680px"
+            className="select-none object-contain p-6"
           />
         </div>
-        <div className="max-w-none font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
-          {language === "tr" ? tr : en}
-        </div>
+      </div>
+
+      <div className="max-w-none font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
+        {language === "tr" ? tr : en}
       </div>
     </section>
   );
