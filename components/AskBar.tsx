@@ -11,8 +11,27 @@ export function AskBar() {
   const [error, setError] = useState<string>("");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
 
-  const ask = async () => {
-    const q = question.trim();
+  const examples =
+    language === "tr"
+      ? [
+          "Ne iş yapıyorsun?",
+          "GRAINZ nedir?",
+          "Hangi teknolojilerle çalışıyorsun?",
+          "Nerede yaşıyorsun?",
+          "Web3 tarafında en güçlü olduğun alan ne?",
+          "Şu ara ne geliştiriyorsun?",
+        ]
+      : [
+          "What do you do?",
+          "What is GRAINZ?",
+          "What technologies do you use?",
+          "Where do you live?",
+          "What’s your strongest area in Web3?",
+          "What are you building lately?",
+        ];
+
+  const ask = async (qOverride?: string) => {
+    const q = (qOverride ?? question).trim();
     if (!q) return;
     setStatus("loading");
     setAnswer("");
@@ -59,9 +78,21 @@ export function AskBar() {
       </div>
 
       <div className="mt-3 font-sans text-[12px] text-[var(--muted)]">
-        {language === "tr"
-          ? 'Örnek: “Ne iş yapıyorsun?” · “GRAINZ nedir?” · “Hangi teknolojilerle çalışıyorsun?”'
-          : 'Examples: “What do you do?” · “What is GRAINZ?” · “What technologies do you use?”'}
+        <div className="flex flex-wrap gap-x-3 gap-y-1">
+          {examples.map((q) => (
+            <button
+              key={q}
+              type="button"
+              onClick={() => {
+                setQuestion(q);
+                void ask(q);
+              }}
+              className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
+            >
+              “{q}”
+            </button>
+          ))}
+        </div>
       </div>
 
       {error ? (
