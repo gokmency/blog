@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import type { HashnodePost } from "@/lib/hashnode/types";
 import { formatNavDate } from "@/lib/ui/date";
