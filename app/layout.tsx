@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     template: "%s — Burak Gökmen Çelik",
   },
   description: "Personal blog & portfolio.",
+  verification: {
+    google: "NdcyiLGbqcOu3TpgComh7tslzt3zVTcVl0vBhjSsswo",
+  },
 };
 
 export default function RootLayout({
@@ -41,6 +44,14 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Google Tag Manager */}
+        <Script id="gtm" strategy="beforeInteractive">{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-596LBZWK');`}</Script>
+        {/* End Google Tag Manager */}
+
         <Script
           id="theme-init"
           strategy="beforeInteractive"
@@ -67,6 +78,17 @@ export default function RootLayout({
         `}</Script>
       </head>
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-596LBZWK"
+            height={0}
+            width={0}
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
+
         <Providers>
           <TamgaRails />
           <div className="mx-auto min-h-screen w-full max-w-[680px] px-6">
