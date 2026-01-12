@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { copy, type Lang } from "@/lib/i18n";
 
-export default function AskPage() {
+export function AskClient({ lang }: { lang: Lang }) {
+  const t = copy[lang].ask;
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -38,9 +40,7 @@ export default function AskPage() {
   return (
     <section className="py-16">
       <div className="mx-auto w-full max-w-[680px]">
-        <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">
-          Ask about Burak
-        </h1>
+        <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">{t.title}</h1>
 
         <div className="flex items-center gap-3 border border-[var(--line)] bg-transparent px-3 py-2">
           <Search size={16} className="text-[var(--muted)]" />
@@ -50,7 +50,7 @@ export default function AskPage() {
             onKeyDown={(e) => {
               if (e.key === "Enter") void ask();
             }}
-            placeholder="Ask a question…"
+            placeholder={t.placeholder}
             className="h-10 w-full bg-transparent font-sans text-[16px] text-[var(--foreground)] outline-none placeholder:text-[var(--muted)]"
           />
           <button
@@ -59,26 +59,19 @@ export default function AskPage() {
             disabled={status === "loading" || !question.trim()}
             className="h-10 shrink-0 rounded-none bg-[var(--accent)] px-4 font-sans text-[14px] text-white hover:bg-[var(--accent-dark)] disabled:opacity-60"
           >
-            {status === "loading" ? "…" : "Ask"}
+            {status === "loading" ? "…" : t.button}
           </button>
         </div>
 
-        <div className="mt-6 font-sans text-[12px] text-[var(--muted)]">
-          Examples: “What do you write about?” · “How can I contact you?” · “What’s the purpose of this site?”
-        </div>
+        <div className="mt-6 font-sans text-[12px] text-[var(--muted)]">{t.examples}</div>
 
-        {error ? (
-          <div className="mt-8 font-sans text-[12px] text-[var(--muted)]">Error: {error}</div>
-        ) : null}
+        {error ? <div className="mt-8 font-sans text-[12px] text-[var(--muted)]">Error: {error}</div> : null}
 
         {answer ? (
-          <div className="mt-10 font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
-            {answer}
-          </div>
+          <div className="mt-10 font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">{answer}</div>
         ) : null}
       </div>
     </section>
   );
 }
-
 

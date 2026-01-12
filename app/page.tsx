@@ -1,11 +1,6 @@
-import { Hero } from "@/components/Hero";
-import { AskBar } from "@/components/AskBar";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  return (
-    <>
-      <Hero />
-      <AskBar />
-    </>
-  );
+export default function Root() {
+  // Middleware already redirects based on Accept-Language.
+  redirect("/en");
 }

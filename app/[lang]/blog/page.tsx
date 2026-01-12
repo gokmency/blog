@@ -1,0 +1,52 @@
+import type { Metadata } from "next";
+import { PostFeed } from "@/components/PostFeed";
+import { getRecentPosts } from "@/lib/hashnode/api";
+import { copy, type Lang } from "@/lib/i18n";
+
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang: Lang } | Promise<{ lang: Lang }>;
+}): Promise<Metadata> {
+  const { lang } = await Promise.resolve(params);
+  const t = copy[lang];
+  const title = t.blog.title;
+  const description =
+    lang === "tr"
+      ? "Burak Gökmen Çelik’ten yazılar: ürün geliştirme, Web3, growth ve notlar."
+      : "Posts by Burak Gökmen Çelik: product building, Web3, growth, and notes.";
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/${lang}/blog`,
+      languages: {
+        en: "/en/blog",
+        tr: "/tr/blog",
+      },
+    },
+  };
+}
+
+export default async function BlogPage({
+  params,
+}: {
+  params: { lang: Lang } | Promise<{ lang: Lang }>;
+}) {
+  const { lang } = await Promise.resolve(params);
+  const t = copy[lang];
+  const posts = await getRecentPosts(20);
+
+  return (
+    <section className="py-16">
+      <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">{t.blog.title}</h1>
+      <PostFeed posts={posts} lang={lang} />
+    </section>
+  );
+}
+

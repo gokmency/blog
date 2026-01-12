@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { copy, type Lang } from "@/lib/i18n";
 
-export function AskBar() {
-  const { language } = useLanguage();
+const GRAINZ_URL = "https://grainz.site";
+
+export function AskBar({ lang }: { lang: Lang }) {
+  const t = copy[lang];
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
 
   const examples =
-    language === "tr"
+    lang === "tr"
       ? [
           "Ne iş yapıyorsun?",
           "GRAINZ nedir?",
@@ -64,7 +66,7 @@ export function AskBar() {
           onKeyDown={(e) => {
             if (e.key === "Enter") void ask();
           }}
-          placeholder={language === "tr" ? "Hakkımda soru sor…" : "Ask about me…"}
+          placeholder={t.home.askHint}
           className="h-10 w-full bg-transparent font-sans text-[16px] text-[var(--foreground)] outline-none placeholder:text-[var(--muted)]"
         />
         <button
@@ -73,24 +75,36 @@ export function AskBar() {
           disabled={status === "loading" || !question.trim()}
           className="h-10 shrink-0 rounded-none bg-[var(--accent)] px-4 font-sans text-[14px] text-white hover:bg-[var(--accent-dark)] disabled:opacity-60"
         >
-          {status === "loading" ? "…" : language === "tr" ? "Sor" : "Ask"}
+          {status === "loading" ? "…" : lang === "tr" ? "Sor" : "Ask"}
         </button>
       </div>
 
       <div className="mt-3 font-sans text-[12px] text-[var(--muted)]">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           {examples.map((q) => (
-            <button
-              key={q}
-              type="button"
-              onClick={() => {
-                setQuestion(q);
-                void ask(q);
-              }}
-              className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
-            >
-              “{q}”
-            </button>
+            q.includes("GRAINZ") ? (
+              <a
+                key={q}
+                href={GRAINZ_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
+              >
+                “{q}”
+              </a>
+            ) : (
+              <button
+                key={q}
+                type="button"
+                onClick={() => {
+                  setQuestion(q);
+                  void ask(q);
+                }}
+                className="hover:text-[var(--accent)] hover:underline decoration-[var(--accent)] underline-offset-4"
+              >
+                “{q}”
+              </button>
+            )
           ))}
         </div>
       </div>

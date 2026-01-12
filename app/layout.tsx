@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Merriweather } from "next/font/google";
 import Script from "next/script";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Header } from "@/components/Header";
-import { TamgaRails } from "@/components/TamgaRails";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,24 +21,22 @@ const merriweather = Merriweather({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gokmens.com"),
-  title: {
-    default: "Burak Gökmen Çelik",
-    template: "%s — Burak Gökmen Çelik",
-  },
-  description: "Personal blog & portfolio.",
   verification: {
     google: "NdcyiLGbqcOu3TpgComh7tslzt3zVTcVl0vBhjSsswo",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const langHeader = (await headers()).get("x-bgc-lang");
+  const lang = langHeader === "tr" ? "tr" : "en";
+
   return (
     <html
-      lang="en"
+      lang={lang}
       className={`${inter.variable} ${merriweather.variable} bg-[var(--background)]`}
       data-theme="light"
       suppressHydrationWarning
@@ -90,7 +88,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* End Google Tag Manager (noscript) */}
 
         <Providers>
-          <TamgaRails />
           <div className="mx-auto min-h-screen w-full max-w-[680px] px-6">
             <Header />
             <main className="py-16">{children}</main>

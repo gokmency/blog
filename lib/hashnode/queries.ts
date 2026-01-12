@@ -56,4 +56,24 @@ export const GET_POST_BY_SLUG = /* GraphQL */ `
   }
 `;
 
+export const GET_POST_SLUGS_PAGE = /* GraphQL */ `
+  query GetPostSlugsPage($host: String!, $first: Int!, $after: String) {
+    publication(host: $host) {
+      id
+      posts(first: $first, after: $after) {
+        edges {
+          node {
+            slug
+            publishedAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
 

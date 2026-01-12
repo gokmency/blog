@@ -1,28 +1,67 @@
-"use client";
+import type { Metadata } from "next";
+import { copy, type Lang } from "@/lib/i18n";
 
-import { useLanguage } from "@/contexts/LanguageContext";
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang: Lang } | Promise<{ lang: Lang }>;
+}): Promise<Metadata> {
+  const { lang } = await Promise.resolve(params);
+  const t = copy[lang];
+  const title = t.about.title;
+  const description =
+    lang === "tr"
+      ? "Burak Gökmen Çelik hakkında: Web3, growth, indie making ve ürün geliştirme odağında kısa biyografi."
+      : "About Burak Gökmen Çelik: brief bio focused on Web3, growth, indie making, and product development.";
 
-export default function AboutPage() {
-  const { language } = useLanguage();
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/${lang}/about`,
+      languages: {
+        en: "/en/about",
+        tr: "/tr/about",
+      },
+    },
+  };
+}
+
+export default async function AboutPage({
+  params,
+}: {
+  params: { lang: Lang } | Promise<{ lang: Lang }>;
+}) {
+  const { lang } = await Promise.resolve(params);
+  const t = copy[lang];
 
   const tr = (
     <>
       <p className="mb-5">Selam, ben Gökmen.</p>
       <p className="mb-5">
-        Blockchain ve kripto para evrenine adım attığımda takvimler 2019&apos;u gösteriyordu. O günden beri bu
-        teknolojiyi sadece ekran başından izleyen biri olmadım; mutfağına girdim, hamuruna dokundum ve insanla
-        buluştuğu her noktada bizzat bulundum.
+        Blockchain ve kripto para evrenine adım attığımda takvimler 2019&apos;u gösteriyordu. O günden beri bu teknolojiyi
+        sadece ekran başından izleyen biri olmadım; mutfağına girdim, hamuruna dokundum ve insanla buluştuğu her noktada
+        bizzat bulundum.
       </p>
       <p className="mb-5">
         Hikayem aslında &quot;insanları anlamakla&quot; başladı. İlk yıllarımda Community Management, Marketing ve Growth
-        dinamiklerine kafa yordum. The Sandbox gibi global bir devin Türkiye tarafını yönetirken metaverse çılgınlığını
-        en önden izledim. Binance TR’nin ilk zamanlarında Beta Tester olarak sistemin açıklarını kovaladım, kullanıcı
+        dinamiklerine kafa yordum. The Sandbox gibi global bir devin Türkiye tarafını yönetirken metaverse çılgınlığını en
+        önden izledim. Binance TR’nin ilk zamanlarında Beta Tester olarak sistemin açıklarını kovaladım, kullanıcı
         deneyimini iyileştirmek için ter döktüm.
       </p>
       <p className="mb-5">
-        Kurucusu olduğum GRAINZ ile de onlarca farklı Web3 projesinin büyüme yolculuğuna eşlik ettim. Bir projenin
-        sıfırdan nasıl &quot;hype&quot; yaratacağını, toplulukların neye heyecanlanıp neye tepki verdiğini ve sürdürülebilir bir
-        büyümenin nasıl kurgulanacağını sahada, yaşayarak öğrendim.
+        Kurucusu olduğum{" "}
+        <a
+          href="https://grainz.site"
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)]"
+        >
+          GRAINZ
+        </a>{" "}
+        ile de onlarca farklı Web3 projesinin büyüme yolculuğuna eşlik ettim. Bir projenin sıfırdan nasıl &quot;hype&quot;
+        yaratacağını, toplulukların neye heyecanlanıp neye tepki verdiğini ve sürdürülebilir bir büyümenin nasıl
+        kurgulanacağını sahada, yaşayarak öğrendim.
       </p>
       <p className="mb-5">Ama hikaye burada bitmedi, aksine şekil değiştirdi.</p>
       <p className="mb-5">
@@ -31,13 +70,11 @@ export default function AboutPage() {
         geliştiriyor ve yayınlıyorum. Fikir üretmek güzel ama o fikri çalışır bir ürüne dönüştürmenin hazzı bambaşka.
       </p>
       <p className="mb-5">Peki, masaya ne getiriyorum?</p>
-      <p className="mb-5">
-        Beni Web3 dünyasında bir tür &quot;İsviçre Çakısı&quot; (Swiss Army Knife) gibi düşünebilirsiniz.
-      </p>
+      <p className="mb-5">Beni Web3 dünyasında bir tür &quot;İsviçre Çakısı&quot; (Swiss Army Knife) gibi düşünebilirsiniz.</p>
       <p className="mb-5">
         Sektörde genellikle yazılımcılar pazarlamanın dilinden, pazarlamacılar ise kodun sınırlarından pek hoşlanmaz. Ben
-        ise bu iki dünyanın ortasında duruyorum. Hem Next.js ile modern bir arayüz kodlarken hem de o arayüzü
-        kullanacak topluluğun psikolojisini analiz edebiliyorum.
+        ise bu iki dünyanın ortasında duruyorum. Hem Next.js ile modern bir arayüz kodlarken hem de o arayüzü kullanacak
+        topluluğun psikolojisini analiz edebebiliyorum.
       </p>
       <p className="mb-5">
         Şu an aktif olarak iş aramıyorum, kendi ürünlerimi geliştirmenin tadını çıkarıyorum. Ancak vizyonuna inandığım,
@@ -70,8 +107,17 @@ export default function AboutPage() {
         the early days of Binance TR, I worked as a beta tester—hunting bugs and improving user experience.
       </p>
       <p className="mb-5">
-        With GRAINZ, I’ve helped many Web3 projects grow—learning what creates hype from zero, what communities react to,
-        and how sustainable growth is built in the field.
+        With{" "}
+        <a
+          href="https://grainz.site"
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)]"
+        >
+          GRAINZ
+        </a>
+        , I’ve helped many Web3 projects grow—learning what creates hype from zero, what communities react to, and how
+        sustainable growth is built in the field.
       </p>
       <p className="mb-5">But the story didn’t end there—it evolved.</p>
       <p className="mb-5">
@@ -100,14 +146,11 @@ export default function AboutPage() {
 
   return (
     <section className="py-16">
-      <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">
-        {language === "tr" ? "Hakkımda" : "About"}
-      </h1>
+      <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">{t.about.title}</h1>
       <div className="max-w-none font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
-        {language === "tr" ? tr : en}
+        {lang === "tr" ? tr : en}
       </div>
     </section>
   );
 }
-
 

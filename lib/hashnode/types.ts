@@ -44,5 +44,25 @@ export type GetPostBySlugData = {
   } | null;
 };
 
+export type HashnodePostForSitemap = {
+  slug: string;
+  publishedAt: string;
+};
+
+export type GetPostSlugsPageData = {
+  publication: {
+    id: string;
+    posts: {
+      edges: Array<{
+        node: HashnodePostForSitemap;
+      }>;
+      pageInfo: {
+        hasNextPage: boolean;
+        endCursor: string | null;
+      };
+    };
+  } | null;
+};
+
 
 

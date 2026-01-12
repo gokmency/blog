@@ -39,14 +39,6 @@ body {
     "Segoe UI Emoji";
 }
 
-/* Hide scrollbars for tamga rails while keeping scroll behavior */
-.tamga-rail {
-  scrollbar-width: none;
-}
-.tamga-rail::-webkit-scrollbar {
-  display: none;
-}
-
 ::selection {
   background: var(--accent);
   color: #ffffff;

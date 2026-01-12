@@ -1,15 +1,18 @@
 import { hashnodeRequest, type HashnodeRequestOptions } from "./client";
 import {
   GET_POST_BY_SLUG,
+  GET_POST_SLUGS_PAGE,
   GET_POSTS,
   GET_PUBLICATION_ID,
   HASHNODE_PUBLICATION_HOST,
 } from "./queries";
 import type {
   GetPostBySlugData,
+  GetPostSlugsPageData,
   GetPostsData,
   GetPublicationIdData,
   HashnodePost,
+  HashnodePostForSitemap,
   HashnodePostWithContent,
 } from "./types";
 
@@ -89,6 +92,59 @@ export async function getPublicationId(): Promise<string> {
   const id = data.publication?.id;
   if (!id) throw new Error(`Hashnode publication not found for host (tried: ${hosts.join(", ")}; last: ${host})`);
   return id;
+}
+
+export async function getAllPostsForSitemap(
+  pageSize = 50,
+  options: HashnodeRequestOptions = { revalidate: 3600 },
+): Promise<HashnodePostForSitemap[]> {
+  const hosts = getHostsToTry();
+  const out: HashnodePostForSitemap[] = [];
+
+  // First page: find a valid host (supports custom domain in the future).
+  const firstPage = await tryHosts<
+    GetPostSlugsPageData,
+    { host: string; first: number; after?: string | null }
+  >(
+    hosts,
+    (host) => ({ host, first: pageSize, after: null }),
+    GET_POST_SLUGS_PAGE,
+    options,
+    (d) => Boolean(d.publication),
+  );
+
+  const hostToUse = firstPage.host;
+  let data = firstPage.data;
+
+  const seen = new Set<string>();
+  const pushEdges = (d: GetPostSlugsPageData) => {
+    const edges = d.publication?.posts.edges ?? [];
+    for (const e of edges) {
+      const slug = e.node.slug?.trim();
+      if (!slug) continue;
+      if (seen.has(slug)) continue;
+      seen.add(slug);
+      out.push({ slug, publishedAt: e.node.publishedAt });
+    }
+  };
+
+  pushEdges(data);
+
+  // Follow cursor pagination.
+  let pageInfo = data.publication?.posts.pageInfo;
+  let guard = 0;
+  while (pageInfo?.hasNextPage && pageInfo.endCursor && guard < 100) {
+    guard += 1;
+    data = await hashnodeRequest<GetPostSlugsPageData, { host: string; first: number; after: string }>(
+      GET_POST_SLUGS_PAGE,
+      { host: hostToUse, first: pageSize, after: pageInfo.endCursor },
+      options,
+    );
+    pushEdges(data);
+    pageInfo = data.publication?.posts.pageInfo;
+  }
+
+  return out;
 }
 
 
