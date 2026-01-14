@@ -1,16 +1,15 @@
-import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
+firebase.ts içi boyle import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
-// Analytics'i şimdilik kapattım, kafa karıştırmasın, önce veritabanı çalışsın.
+import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 
-// DİKKAT: Buraya senin anahtarlarını elle yazdık (Hardcode)
 const firebaseConfig = {
-  apiKey: "AIzaSyDYFokbwPY-ZNvUlVEQ3zNAbG-UdQVGVkc",
-  authDomain: "gokmensblog.firebaseapp.com",
-  projectId: "gokmensblog",
-  storageBucket: "gokmensblog.firebasestorage.app",
-  messagingSenderId: "828603398406",
-  appId: "1:828603398406:web:92faeeedf43134eabf0687",
-  measurementId: "G-EG5935XNCM"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -19,5 +18,15 @@ let app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : 
 // Initialize Firestore
 const db: Firestore = getFirestore(app);
 
-// Sadece db ve app'i dışarı aktaralım şimdilik
-export { app, db };
+// Initialize Analytics (Client-side only)
+let analytics: Analytics | undefined;
+
+if (typeof window !== "undefined") {
+  isSupported().then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(app);
+    }
+  });
+}
+
+export { app, db, analytics };
