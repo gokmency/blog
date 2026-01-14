@@ -90,9 +90,9 @@ export default async function BlogPostPage({
   return (
     <article className="py-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <ViewTracker slug={post.slug} />
       <header className="mb-12">
         <h1 className="font-serif text-[32px] leading-tight tracking-tight text-[var(--foreground)]">{post.title}</h1>
+        <ViewTracker slug={post.slug} />
       </header>
 
       <div className="prose">
