@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { X, Send, MessageCircle } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { type Lang } from "@/lib/i18n";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -18,6 +18,7 @@ export function ChatWidget({ lang }: { lang: Lang }) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   const t = {
     talkToMe: lang === "tr" ? "Benimle konuş" : "Talk to me",
@@ -30,7 +31,6 @@ export function ChatWidget({ lang }: { lang: Lang }) {
   };
 
   useEffect(() => {
-    // Set initial greeting
     setMessages([
       {
         id: "init-1",
@@ -41,7 +41,6 @@ export function ChatWidget({ lang }: { lang: Lang }) {
   }, [lang]);
 
   useEffect(() => {
-    // Scroll to bottom when messages change
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -90,14 +89,14 @@ export function ChatWidget({ lang }: { lang: Lang }) {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 font-sans">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-4 font-sans md:bottom-6 md:right-6">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="flex h-[500px] w-[350px] flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--background)] shadow-2xl md:h-[600px] md:w-[400px]"
+            className="flex h-[500px] w-[calc(100vw-32px)] flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--background)] shadow-2xl md:h-[600px] md:w-[400px]"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--background)] p-4">
@@ -183,28 +182,30 @@ export function ChatWidget({ lang }: { lang: Lang }) {
         )}
       </AnimatePresence>
 
-      {/* Floating Action Button */}
+      {/* Big Avatar Button */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        onHoverStart={() => setIsHovering(true)}
+        onHoverEnd={() => setIsHovering(false)}
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full shadow-lg transition-shadow hover:shadow-xl"
+        className="relative flex items-end justify-center outline-none"
       >
-         <div className="absolute inset-0 bg-black">
-             <Image
-               src="/assets/gokmen-ai-avatar.png"
-               alt="Chat"
-               fill
-               className="object-cover opacity-100 transition-opacity duration-300 group-hover:opacity-100"
-             />
-             {/* Overlay for icon on hover? No, let's just keep the avatar always visible as per request. */}
-         </div>
+        <div className="relative h-40 w-40 md:h-64 md:w-64">
+           <Image
+             src={isHovering && !isOpen ? "/assets/gokmen-ai-avatar-thumbs.png" : "/assets/gokmen-ai-avatar.png"}
+             alt="Chat with Gökmen AI"
+             fill
+             className="object-contain drop-shadow-2xl transition-all duration-300"
+             priority
+           />
+        </div>
 
          {/* Tooltip / Label */}
          {!isOpen && (
-            <div className="absolute bottom-full right-0 mb-3 whitespace-nowrap rounded-lg bg-[var(--foreground)] px-3 py-1.5 text-xs font-medium text-[var(--background)] opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="absolute bottom-[80%] right-[70%] whitespace-nowrap rounded-lg bg-[var(--foreground)] px-3 py-1.5 text-xs font-medium text-[var(--background)] shadow-lg">
               {t.talkToMe}
-              <div className="absolute -bottom-1 right-6 h-2 w-2 rotate-45 bg-[var(--foreground)]"></div>
+              <div className="absolute -bottom-1 right-2 h-2 w-2 rotate-45 bg-[var(--foreground)]"></div>
             </div>
          )}
       </motion.button>
