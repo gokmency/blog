@@ -90,12 +90,14 @@ export function ChatWidget({ lang }: { lang: Lang }) {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-4 font-sans md:bottom-6 md:right-6">
-      <AnimatePresence>
-        {isOpen && (
+      <AnimatePresence mode="wait" initial={false}>
+        {isOpen ? (
           <motion.div
+            key="chat-window"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.2 }}
             className="flex h-[500px] w-[calc(100vw-32px)] flex-col overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--background)] shadow-2xl md:h-[600px] md:w-[400px]"
           >
             {/* Header */}
@@ -160,6 +162,7 @@ export function ChatWidget({ lang }: { lang: Lang }) {
             <div className="border-t border-[var(--line)] bg-[var(--background)] p-4">
               <div className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--background)] px-4 py-2 focus-within:border-[var(--accent)]">
                 <input
+                  autoFocus
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -179,36 +182,38 @@ export function ChatWidget({ lang }: { lang: Lang }) {
               </div>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        ) : (
+          <motion.button
+            key="avatar-button"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onHoverStart={() => setIsHovering(true)}
+            onHoverEnd={() => setIsHovering(false)}
+            onClick={() => setIsOpen(true)}
+            className="relative flex items-end justify-center outline-none"
+          >
+            <div className="relative h-40 w-40 md:h-64 md:w-64">
+               <Image
+                 src={isHovering ? "/assets/gokmen-ai-avatar-thumbs.png" : "/assets/gokmen-ai-avatar.png"}
+                 alt="Chat with Gökmen AI"
+                 fill
+                 className="object-contain drop-shadow-2xl transition-all duration-300"
+                 priority
+               />
+            </div>
 
-      {/* Big Avatar Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onHoverStart={() => setIsHovering(true)}
-        onHoverEnd={() => setIsHovering(false)}
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative flex items-end justify-center outline-none"
-      >
-        <div className="relative h-40 w-40 md:h-64 md:w-64">
-           <Image
-             src={isHovering && !isOpen ? "/assets/gokmen-ai-avatar-thumbs.png" : "/assets/gokmen-ai-avatar.png"}
-             alt="Chat with Gökmen AI"
-             fill
-             className="object-contain drop-shadow-2xl transition-all duration-300"
-             priority
-           />
-        </div>
-
-         {/* Tooltip / Label */}
-         {!isOpen && (
+             {/* Tooltip / Label */}
             <div className="absolute bottom-[80%] right-[70%] whitespace-nowrap rounded-lg bg-[var(--foreground)] px-3 py-1.5 text-xs font-medium text-[var(--background)] shadow-lg">
               {t.talkToMe}
               <div className="absolute -bottom-1 right-2 h-2 w-2 rotate-45 bg-[var(--foreground)]"></div>
             </div>
-         )}
-      </motion.button>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
