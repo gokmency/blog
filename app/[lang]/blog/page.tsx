@@ -20,14 +20,16 @@ export async function generateMetadata({
       ? "Burak Gökmen Çelik’ten yazılar: ürün geliştirme, Web3, growth ve notlar."
       : "Posts by Burak Gökmen Çelik: product building, Web3, growth, and notes.";
 
+  const baseUrl = "https://gokmens.com";
+
   return {
     title,
     description,
     alternates: {
-      canonical: `/${lang}/blog`,
+      canonical: `${baseUrl}/${lang}/blog`,
       languages: {
-        en: "/en/blog",
-        tr: "/tr/blog",
+        en: `${baseUrl}/en/blog`,
+        tr: `${baseUrl}/tr/blog`,
       },
     },
   };
@@ -42,8 +44,30 @@ export default async function BlogPage({
   const t = copy[lang];
   const posts = await getRecentPosts(20);
 
+  const baseUrl = "https://gokmens.com";
+  const pageUrl = `${baseUrl}/${lang}/blog`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: t.blog.title,
+    url: pageUrl,
+    description: lang === "tr"
+      ? "Burak Gökmen Çelik’ten yazılar: ürün geliştirme, Web3, growth ve notlar."
+      : "Posts by Burak Gökmen Çelik: product building, Web3, growth, and notes.",
+    publisher: {
+      "@type": "Person",
+      name: "Burak Gökmen Çelik",
+      url: `${baseUrl}/${lang}`,
+    },
+  };
+
   return (
     <section className="py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">{t.blog.title}</h1>
       <PostFeed posts={posts} lang={lang} />
     </section>

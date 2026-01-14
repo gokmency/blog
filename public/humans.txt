@@ -1,0 +1,11 @@
+/* TEAM */
+  Name: Burak Gökmen Çelik
+  Role: Indie Developer & Product Builder
+  Site: https://gokmens.com
+  Twitter: @burakgokmen
+  Location: Turkey
+
+/* SITE */
+  Standards: HTML5, CSS3, ES6+
+  Components: Next.js, Tailwind CSS, Framer Motion
+  Software: VS Code

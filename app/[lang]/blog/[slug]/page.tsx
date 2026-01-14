@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import { getPostBySlug } from "@/lib/hashnode/api";
 import type { Lang } from "@/lib/i18n";
 import { ViewTracker } from "@/components/ViewTracker";
+import { MarkdownImage } from "@/components/MarkdownImage";
 
 const BASE_URL = "https://gokmens.com";
 
@@ -29,14 +30,16 @@ export async function generateMetadata({
     (typeof post.brief === "string" && post.brief.trim()) ||
     (lang === "tr" ? "Blog yazısı." : "Blog post.");
 
+  const images = post.coverImage?.url ? [post.coverImage.url] : [];
+
   return {
     title,
     description,
     alternates: {
-      canonical: `/${lang}/blog/${slug}`,
+      canonical: `${BASE_URL}/${lang}/blog/${slug}`,
       languages: {
-        en: `/en/blog/${slug}`,
-        tr: `/tr/blog/${slug}`,
+        en: `${BASE_URL}/en/blog/${slug}`,
+        tr: `${BASE_URL}/tr/blog/${slug}`,
       },
     },
     openGraph: {
@@ -46,11 +49,13 @@ export async function generateMetadata({
       url: `${BASE_URL}/${lang}/blog/${slug}`,
       publishedTime: post.publishedAt,
       tags: (post.tags || []).map((t) => t.name),
+      images,
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
+      images,
     },
   };
 }
@@ -76,14 +81,24 @@ export default async function BlogPostPage({
     "@type": "BlogPosting",
     headline: post.title,
     description,
+    image: post.coverImage?.url,
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
     url: pageUrl,
     mainEntityOfPage: pageUrl,
+    keywords: (post.tags || []).map((t) => t.name).join(", "),
     author: {
       "@type": "Person",
       name: "Burak Gökmen Çelik",
       url: `${BASE_URL}/${lang}`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Burak Gökmen Çelik",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://gokmens.com/assets/me.png",
+      },
     },
   };
 
@@ -96,7 +111,14 @@ export default async function BlogPostPage({
       </header>
 
       <div className="prose">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            img: MarkdownImage
+          }}
+        >
+          {markdown}
+        </ReactMarkdown>
       </div>
     </article>
   );
