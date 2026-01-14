@@ -9,7 +9,6 @@ export type HashnodePost = {
   title: string;
   slug: string;
   brief?: string | null;
-  views: number;
   publishedAt: string;
   tags: HashnodeTag[];
 };
