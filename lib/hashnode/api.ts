@@ -18,10 +18,13 @@ import type {
 
 function uniqueNonEmpty(values: Array<string | undefined | null>) {
   const out: string[] = [];
+  const seen = new Set<string>();
   for (const v of values) {
     const s = typeof v === "string" ? v.trim() : "";
     if (!s) continue;
-    if (!out.includes(s)) out.push(s);
+    if (seen.has(s)) continue;
+    seen.add(s);
+    out.push(s);
   }
   return out;
 }
