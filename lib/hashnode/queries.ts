@@ -19,6 +19,7 @@ export const GET_POSTS = /* GraphQL */ `
             title
             slug
             brief
+            views
             publishedAt
             tags {
               id
@@ -41,6 +42,7 @@ export const GET_POST_BY_SLUG = /* GraphQL */ `
         title
         slug
         brief
+        views
         publishedAt
         tags {
           id

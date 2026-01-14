@@ -18,6 +18,9 @@ export function PostFeed({ posts, lang }: { posts: HashnodePost[]; lang: Lang })
             >
               {post.title}
             </Link>
+            <div className="shrink-0 font-mono text-[12px] text-[var(--muted)]">
+              ({post.views.toLocaleString()} views)
+            </div>
           </li>
         ))}
       </ul>
