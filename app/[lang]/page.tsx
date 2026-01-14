@@ -1,5 +1,5 @@
 import { Hero } from "@/components/Hero";
-import { AskBar } from "@/components/AskBar";
+import { ChatWidget } from "@/components/ChatWidget";
 import type { Lang } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
 
@@ -44,7 +44,7 @@ export default async function Home({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero lang={lang} />
-      <AskBar lang={lang} />
+      <ChatWidget lang={lang} />
     </>
   );
 }
