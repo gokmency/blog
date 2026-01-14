@@ -24,8 +24,18 @@ export default async function Home({
       "@type": "Person",
       name: "Burak Gökmen Çelik",
       url: pageUrl,
-      description,
+      image: "https://gokmens.com/assets/me.png",
+      sameAs: [
+        "https://twitter.com/burakgokmen",
+        "https://github.com/burakgokmen",
+        "https://linkedin.com/in/burakgokmencelik",
+      ],
       jobTitle: "Indie Developer & Product Builder",
+      description,
+      worksFor: {
+        "@type": "Organization",
+        name: "Indie",
+      },
     },
     {
       "@context": "https://schema.org",

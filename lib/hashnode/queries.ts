@@ -41,6 +41,9 @@ export const GET_POST_BY_SLUG = /* GraphQL */ `
         title
         slug
         brief
+        coverImage {
+          url
+        }
         publishedAt
         tags {
           id

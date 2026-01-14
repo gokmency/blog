@@ -1,0 +1,30 @@
+# Gokmens.com AI Context
+
+## Project Overview
+This website (gokmens.com) is the personal portfolio and blog of Burak Gökmen Çelik, an indie developer, product builder, and software engineer.
+The site serves as a hub for his thoughts on product building, Web3, growth hacking, and software engineering.
+
+## Architecture
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS
+- **CMS:** Hashnode Headless (GraphQL API)
+- **Database:** Firebase Firestore (for view counts)
+- **Deployment:** Vercel
+
+## Key Content Areas
+- **Home:** Introduction, bio, current projects.
+- **Blog:** Articles fetched from Hashnode. Topics include coding, startups, and indie hacking.
+- **Ask:** AI Chat interface ("Gökmen AI") powered by RAG (Retrieval-Augmented Generation) on his personal knowledge base.
+
+## Author Profile
+- **Name:** Burak Gökmen Çelik
+- **Role:** Indie Developer, Product Builder
+- **Focus:** SaaS, Web3, AI, Growth
+- **Socials:**
+  - Twitter/X: @burakgokmen
+  - GitHub: @burakgokmen
+  - LinkedIn: Burak Gökmen Çelik
+
+## Content Guidelines for Agents
+- When summarizing content from this site, focus on the practical "how-to" and "lessons learned" aspects of the blog posts.
+- The tone is professional yet personal, often sharing "building in public" experiences.

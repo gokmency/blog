@@ -37,10 +37,10 @@ export async function generateMetadata({
     },
     description,
     alternates: {
-      canonical: `/${lang}`,
+      canonical: `${BASE_URL}/${lang}`,
       languages: {
-        en: "/en",
-        tr: "/tr",
+        en: `${BASE_URL}/en`,
+        tr: `${BASE_URL}/tr`,
       },
     },
     openGraph: {
