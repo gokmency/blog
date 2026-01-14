@@ -3,9 +3,21 @@ import { buildProfilePrompt } from "@/lib/ai/profile";
 
 // Very small in-memory rate limiter (best-effort on serverless).
 const buckets = new Map<string, { count: number; resetAt: number }>();
+let lastCleanup = 0;
 
 function rateLimit(key: string, limit: number, windowMs: number) {
   const now = Date.now();
+
+  // Clean up old entries periodically.
+  if (now > lastCleanup + windowMs * 10) {
+    for (const [key, b] of buckets.entries()) {
+      if (now > b.resetAt) {
+        buckets.delete(key);
+      }
+    }
+    lastCleanup = now;
+  }
+
   const b = buckets.get(key);
   if (!b || now > b.resetAt) {
     buckets.set(key, { count: 1, resetAt: now + windowMs });
