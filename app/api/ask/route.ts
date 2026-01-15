@@ -57,6 +57,11 @@ function stripGreeting(answer: string) {
     .trim();
 }
 
+type ChatMessage = {
+  role: "user" | "assistant";
+  text: string;
+};
+
 export async function POST(req: Request) {
   try {
     // Netlify provides client IP in this header:
@@ -82,8 +87,23 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = (await req.json()) as { question?: unknown };
-    const question = typeof body.question === "string" ? body.question.trim() : "";
+    const body = (await req.json()) as { question?: unknown; messages?: ChatMessage[] };
+
+    // Support both single question (legacy/simple) and history (messages array)
+    let question = "";
+    let history: ChatMessage[] = [];
+
+    if (Array.isArray(body.messages)) {
+      history = body.messages;
+      const lastMsg = history[history.length - 1];
+      if (lastMsg && lastMsg.role === "user") {
+        question = lastMsg.text.trim();
+        // Remove the last message from history so we don't duplicate it in the prompt
+        history = history.slice(0, -1);
+      }
+    } else if (typeof body.question === "string") {
+      question = body.question.trim();
+    }
 
     if (!question || question.length < 2 || question.length > 500) {
       return NextResponse.json({ ok: false, error: "INVALID_QUESTION" }, { status: 400 });
@@ -95,7 +115,15 @@ export async function POST(req: Request) {
     }
 
     const system = buildProfilePrompt();
-    const prompt = `${system}\n\nUser question:\n${question}\n\nAnswer:`;
+
+    // Format history for the prompt
+    // We only take the last ~10 messages to keep context window manageable
+    const relevantHistory = history.slice(-10);
+    const historyText = relevantHistory
+      .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.text}`)
+      .join("\n");
+
+    const prompt = `${system}\n\n### CONVERSATION HISTORY\n${historyText}\n\nUser: ${question}\nAssistant:`;
 
     const res = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
@@ -108,8 +136,8 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.2,
-            maxOutputTokens: 250,
+            temperature: 0.7, // Increased for more natural/sincere tone
+            maxOutputTokens: 500, // Increased to allow for more detailed answers
           },
         }),
       },
@@ -129,7 +157,10 @@ export async function POST(req: Request) {
     }
 
     let answer = extractText(json) || "I don't know based on what I have.";
-    if (!isGreetingQuestion(question)) {
+
+    // We can probably relax the stripGreeting logic if we trust the system prompt more,
+    // but keeping it safe is fine.
+    if (!isGreetingQuestion(question) && history.length === 0) {
       answer = stripGreeting(answer);
     }
     return NextResponse.json({ ok: true, answer });
@@ -138,5 +169,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "FAILED", message }, { status: 500 });
   }
 }
-
-

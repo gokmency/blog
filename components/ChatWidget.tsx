@@ -55,15 +55,28 @@ export function ChatWidget({ lang }: { lang: Lang }) {
       text: input.trim(),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    // Optimistic update
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setInput("");
     setIsLoading(true);
 
     try {
+      // Send the history (excluding the very first initial greeting if you want,
+      // but keeping it is fine as it sets context. We'll send the whole visible history.)
+      // We filter out any potential temporary error messages if we had logic for that,
+      // but here we just send what's in state.
+      // We also need to map our ID-based messages to the simpler structure API expects if needed,
+      // but our API handles the shape { role, text }.
+      const historyPayload = newMessages.map(m => ({
+        role: m.role,
+        text: m.text
+      }));
+
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question: userMsg.text }),
+        body: JSON.stringify({ messages: historyPayload }),
       });
       const json = await res.json();
 
