@@ -2,14 +2,14 @@ import { hashnodeRequest, type HashnodeRequestOptions } from "./client";
 import {
   GET_POST_BY_SLUG,
   GET_POST_SLUGS_PAGE,
-  GET_POSTS,
+  GET_POSTS_PAGE,
   GET_PUBLICATION_ID,
   HASHNODE_PUBLICATION_HOST,
 } from "./queries";
 import type {
   GetPostBySlugData,
   GetPostSlugsPageData,
-  GetPostsData,
+  GetPostsPageData,
   GetPublicationIdData,
   HashnodePost,
   HashnodePostForSitemap,
@@ -56,19 +56,53 @@ function getHostsToTry() {
   ]);
 }
 
-export async function getRecentPosts(first = 20): Promise<HashnodePost[]> {
+const POSTS_PAGE_SIZE = 10;
+
+export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
   const hosts = getHostsToTry();
-  const { data } = await tryHosts<GetPostsData, { host: string; first: number }>(
+  const opts = { cache: "no-store" as RequestCache };
+  const firstPage = await tryHosts<
+    GetPostsPageData,
+    { host: string; first: number; after?: string | null }
+  >(
     hosts,
-    (host) => ({ host, first }),
-    GET_POSTS,
-    // Always fetch fresh for the blog list so newly published posts show up immediately on platforms
-    // where ISR may behave like a build-time snapshot.
-    { cache: "no-store" },
+    (host) => ({ host, first: POSTS_PAGE_SIZE, after: null }),
+    GET_POSTS_PAGE,
+    opts,
     (d) => Boolean(d.publication),
   );
-  const edges = data.publication?.posts.edges ?? [];
-  return edges.map((e) => e.node);
+  const hostToUse = firstPage.host;
+  let data = firstPage.data;
+  const out: HashnodePost[] = [];
+  const seen = new Set<string>();
+
+  const pushEdges = () => {
+    const edges = data.publication?.posts.edges ?? [];
+    for (const e of edges) {
+      const node = e.node;
+      if (node?.slug && !seen.has(node.slug)) {
+        seen.add(node.slug);
+        out.push(node);
+      }
+    }
+  };
+
+  pushEdges();
+
+  let pageInfo = data.publication?.posts.pageInfo;
+  let guard = 0;
+  while (out.length < wanted && pageInfo?.hasNextPage && pageInfo.endCursor && guard < 20) {
+    guard += 1;
+    data = await hashnodeRequest<GetPostsPageData, { host: string; first: number; after: string }>(
+      GET_POSTS_PAGE,
+      { host: hostToUse, first: POSTS_PAGE_SIZE, after: pageInfo.endCursor },
+      opts,
+    );
+    pushEdges();
+    pageInfo = data.publication?.posts.pageInfo;
+  }
+
+  return out.slice(0, wanted);
 }
 
 export async function getPostBySlug(slug: string): Promise<HashnodePostWithContent | null> {

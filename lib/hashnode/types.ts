@@ -38,6 +38,21 @@ export type GetPostsData = {
   } | null;
 };
 
+export type GetPostsPageData = {
+  publication: {
+    id: string;
+    posts: {
+      edges: Array<{
+        node: HashnodePost;
+      }>;
+      pageInfo: {
+        hasNextPage: boolean;
+        endCursor: string | null;
+      };
+    };
+  } | null;
+};
+
 export type GetPostBySlugData = {
   publication: {
     id: string;

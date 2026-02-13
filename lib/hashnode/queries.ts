@@ -32,6 +32,34 @@ export const GET_POSTS = /* GraphQL */ `
   }
 `;
 
+export const GET_POSTS_PAGE = /* GraphQL */ `
+  query GetPostsPage($host: String!, $first: Int!, $after: String) {
+    publication(host: $host) {
+      id
+      posts(first: $first, after: $after) {
+        edges {
+          node {
+            id
+            title
+            slug
+            brief
+            publishedAt
+            tags {
+              id
+              slug
+              name
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
 export const GET_POST_BY_SLUG = /* GraphQL */ `
   query GetPostBySlug($host: String!, $slug: String!) {
     publication(host: $host) {

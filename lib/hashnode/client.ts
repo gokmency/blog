@@ -16,6 +16,7 @@ export async function hashnodeRequest<TData, TVariables extends Record<string, u
   options?: HashnodeRequestOptions,
 ): Promise<TData> {
   const useRevalidate = typeof options?.revalidate === "number" && options.revalidate > 0;
+  const noStore = options?.cache === "no-store";
   const res = await fetch("https://gql.hashnode.com", {
     method: "POST",
     headers: {
@@ -23,7 +24,7 @@ export async function hashnodeRequest<TData, TVariables extends Record<string, u
     },
     body: JSON.stringify({ query, variables }),
     cache: options?.cache,
-    next: useRevalidate ? { revalidate: options!.revalidate } : undefined,
+    next: noStore ? { revalidate: 0 } : useRevalidate ? { revalidate: options!.revalidate } : undefined,
   });
 
   if (!res.ok) {
