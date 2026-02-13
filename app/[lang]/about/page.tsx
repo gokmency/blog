@@ -1,5 +1,48 @@
 import type { Metadata } from "next";
 import { copy, type Lang } from "@/lib/i18n";
+import { AboutGallery, type GalleryImage } from "@/components/AboutGallery";
+
+const BASE_URL = "https://gokmens.com";
+
+// Gallery images - WebP formatında görseller
+const galleryImages: GalleryImage[] = [
+  {
+    src: "/assets/grainz-studio-kurucuları-burak-gökmen-çelik-abdülkadir-maslak-ve-burak-yüzgüç-riot-etkinliği-valorant-maçı-redbull-eventinde.webp",
+    alt: "GRAINZ Studio kurucuları Burak Gökmen Çelik, Abdülkadir Maslak ve Burak Yüzgüç Riot etkinliği Valorant maçı Redbull eventinde",
+    width: 1200,
+    height: 800,
+  },
+  {
+    src: "/assets/sebastien-borget-sandbox-game-founder-and-grainzstudio-co-founders-burak-gökmen-çelik-and-burak-yüzgüç.webp",
+    alt: "Sebastien Borget (The Sandbox Game Founder) ve GRAINZ Studio kurucuları Burak Gökmen Çelik ve Burak Yüzgüç",
+    width: 1200,
+    height: 800,
+  },
+  {
+    src: "/assets/burak-gokmen-celik-grainzstudio-kuruculari-binance-global-ve-binanceTR-etkinligine-geldi-2.webp",
+    alt: "Burak Gökmen Çelik ve GRAINZ Studio kurucuları Binance Global ve Binance TR etkinliğinde, konferans salonunda sunum yapılırken",
+    width: 1200,
+    height: 800,
+  },
+  {
+    src: "/assets/grainz-studio-kurucuları-burak-gökmen-çelik-ve-burak-yüzgüç.webp",
+    alt: "GRAINZ Studio kurucuları Burak Gökmen Çelik ve Burak Yüzgüç",
+    width: 1200,
+    height: 800,
+  },
+  {
+    src: "/assets/ibw-grainz-kurucuları-burak-gökmen-çelik-ve-burak-yüzgüç.webp",
+    alt: "IBW etkinliğinde GRAINZ Studio kurucuları Burak Gökmen Çelik ve Burak Yüzgüç",
+    width: 1200,
+    height: 800,
+  },
+  {
+    src: "/assets/grainzstudio-takim-ekip-uyeleri-burak-gokmen-celik-ve-takim-arkadaslari-tatilde-antalya-gezisi.webp",
+    alt: "GRAINZ Studio takım ekip üyeleri Burak Gökmen Çelik ve takım arkadaşları tatilde Antalya gezisinde şelale önünde",
+    width: 1200,
+    height: 800,
+  },
+];
 
 export async function generateMetadata({
   params,
@@ -14,15 +57,38 @@ export async function generateMetadata({
       ? "Burak Gökmen Çelik hakkında: Web3, growth, indie making ve ürün geliştirme odağında kısa biyografi."
       : "About Burak Gökmen Çelik: brief bio focused on Web3, growth, indie making, and product development.";
 
+  // SEO için görseller - galerideki ilk görseli veya varsayılan görseli kullan
+  const ogImage = galleryImages.length > 0 
+    ? `${BASE_URL}${galleryImages[0].src}` 
+    : `${BASE_URL}/assets/me.png`;
+  const images = galleryImages.length > 0 
+    ? galleryImages.map(img => `${BASE_URL}${img.src}`)
+    : [ogImage];
+
   return {
     title,
     description,
     alternates: {
-      canonical: `/${lang}/about`,
+      canonical: `${BASE_URL}/${lang}/about`,
       languages: {
-        en: "/en/about",
-        tr: "/tr/about",
+        en: `${BASE_URL}/en/about`,
+        tr: `${BASE_URL}/tr/about`,
       },
+    },
+    openGraph: {
+      type: "profile",
+      title,
+      description,
+      url: `${BASE_URL}/${lang}/about`,
+      locale: lang === "tr" ? "tr_TR" : "en_US",
+      siteName: "Burak Gökmen Çelik",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images,
     },
   };
 }
@@ -37,7 +103,7 @@ export default async function AboutPage({
 
   const tr = (
     <>
-      <p className="mb-5">Selam, ben Gökmen.</p>
+      <p className="mb-5">Selam, ben Burak Gökmen Çelik.</p>
       <p className="mb-5">
         Blockchain ve kripto para evrenine adım attığımda takvimler 2019&apos;u gösteriyordu. O günden beri bu teknolojiyi
         sadece ekran başından izleyen biri olmadım; mutfağına girdim, hamuruna dokundum ve insanla buluştuğu her noktada
@@ -149,6 +215,13 @@ export default async function AboutPage({
       <h1 className="mb-8 font-serif text-[28px] leading-tight tracking-tight text-[var(--foreground)]">{t.about.title}</h1>
       <div className="max-w-none font-serif text-[18px] leading-[1.85] text-[var(--foreground)]">
         {lang === "tr" ? tr : en}
+      </div>
+      
+      <div className="mt-12">
+        <h2 className="mb-6 font-serif text-[24px] leading-tight tracking-tight text-[var(--foreground)]">
+          {lang === "tr" ? "Galeri" : "Gallery"}
+        </h2>
+        <AboutGallery images={galleryImages} />
       </div>
     </section>
   );
