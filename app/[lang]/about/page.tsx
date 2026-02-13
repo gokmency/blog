@@ -101,60 +101,147 @@ export default async function AboutPage({
   const { lang } = await Promise.resolve(params);
   const t = copy[lang];
 
+  const grainzLink = (
+    <a
+      href="https://grainz.site"
+      target="_blank"
+      rel="noreferrer"
+      className="underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)]"
+    >
+      GRAINZ
+    </a>
+  );
+  const grainzStudioLink = (
+    <a
+      href="https://grainz.site"
+      target="_blank"
+      rel="noreferrer"
+      className="underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)]"
+    >
+      Grainz Studio
+    </a>
+  );
+
   const tr = (
     <>
       <p className="mb-5">Selam, ben Burak Gökmen Çelik.</p>
       <p className="mb-5">
         Blockchain ve kripto para evrenine adım attığımda takvimler 2019&apos;u gösteriyordu. O günden beri bu teknolojiyi
-        sadece ekran başından izleyen biri olmadım; mutfağına girdim, hamuruna dokundum ve insanla buluştuğu her noktada
-        bizzat bulundum.
+        sadece ekran başından izleyen, whitepaper okuyup geçen biri olmadım; mutfağına girdim, hamuruna dokundum ve
+        teknolojinin insanla buluştuğu her noktada bizzat bulundum. Piyasaların en coşkulu boğa sezonlarını da, en sessiz
+        ayı kışlarını da içeriden tecrübe ettim. Dijital ekosistemde beni @gokmeneth olarak tanıyor olabilirsiniz; bu isim
+        benim için sadece bir kullanıcı adı değil, Web3 dünyasındaki 5 yılı aşkın serüvenimin, kriz yönetimlerimin ve
+        bitmek bilmeyen inşa etme tutkumun bir özeti.
+      </p>
+      <h2 className="mb-4 mt-10 font-serif text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">
+        İnsan Odaklı Bir Başlangıç: Topluluk, Psikoloji ve Büyüme
+      </h2>
+      <p className="mb-5">
+        Hikayem aslında &quot;insanları anlamakla&quot; başladı. Web3 projelerinin en kusursuz kodlara sahip olsalar bile,
+        arkasında inanan bir topluluk yoksa &quot;hayalet kasabalara&quot; dönüştüğünü çok erken fark ettim. Bu yüzden ilk
+        yıllarımda Community Management, Marketing ve Growth dinamiklerine kafa yordum. Sektörün en hareketli
+        dönemlerinde, global devlerin yerel ve küresel stratejilerinde aktif roller üstlendim:
       </p>
       <p className="mb-5">
-        Hikayem aslında &quot;insanları anlamakla&quot; başladı. İlk yıllarımda Community Management, Marketing ve Growth
-        dinamiklerine kafa yordum. The Sandbox gibi global bir devin Türkiye tarafını yönetirken metaverse çılgınlığını en
-        önden izledim. Binance TR’nin ilk zamanlarında Beta Tester olarak sistemin açıklarını kovaladım, kullanıcı
-        deneyimini iyileştirmek için ter döktüm.
+        <strong>The Sandbox:</strong> Global bir metaverse devinin Türkiye tarafını 3 yıl boyunca (2020-2023) yönetirken,
+        dijital sahiplik ve sanal arsa çılgınlığını en önden izledim. Sadece binlerce kişilik toplulukları yönetmekle
+        kalmadım; markaların metaverse evrenine entegrasyon süreçlerini yönettim, etkinlikler kurguladım ve ekosistemi
+        sıfırdan inşa ettim. Bu süreç benim için sadece bir iş değil, kitlesel adaptasyonun nasıl sağlandığını analiz
+        ettiğim dev bir laboratuvar çalışmasıydı.
       </p>
       <p className="mb-5">
-        Kurucusu olduğum{" "}
-        <a
-          href="https://grainz.site"
-          target="_blank"
-          rel="noreferrer"
-          className="underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)]"
-        >
-          GRAINZ
-        </a>{" "}
-        ile de onlarca farklı Web3 projesinin büyüme yolculuğuna eşlik ettim. Bir projenin sıfırdan nasıl &quot;hype&quot;
-        yaratacağını, toplulukların neye heyecanlanıp neye tepki verdiğini ve sürdürülebilir bir büyümenin nasıl
-        kurgulanacağını sahada, yaşayarak öğrendim.
-      </p>
-      <p className="mb-5">Ama hikaye burada bitmedi, aksine şekil değiştirdi.</p>
-      <p className="mb-5">
-        Son dönemde kendimi sadece strateji kuran tarafta değil, o stratejiyi hayata geçiren &quot;inşa edici&quot; tarafta daha
-        mutlu hissediyorum. Artık bir Indie Maker ve Indie Developer olarak kendi fikirlerimi koda döküyor, MVP&apos;ler
-        geliştiriyor ve yayınlıyorum. Fikir üretmek güzel ama o fikri çalışır bir ürüne dönüştürmenin hazzı bambaşka.
-      </p>
-      <p className="mb-5">Peki, masaya ne getiriyorum?</p>
-      <p className="mb-5">Beni Web3 dünyasında bir tür &quot;İsviçre Çakısı&quot; (Swiss Army Knife) gibi düşünebilirsiniz.</p>
-      <p className="mb-5">
-        Sektörde genellikle yazılımcılar pazarlamanın dilinden, pazarlamacılar ise kodun sınırlarından pek hoşlanmaz. Ben
-        ise bu iki dünyanın ortasında duruyorum. Hem Next.js ile modern bir arayüz kodlarken hem de o arayüzü kullanacak
-        topluluğun psikolojisini analiz edebebiliyorum.
+        <strong>Binance TR:</strong> Global bir devin Türkiye pazarına girişindeki ilk zamanlarda Beta Tester olarak yer
+        aldım. Sistemin uç noktalarındaki açıkları kovaladım, kullanıcı deneyimini iyileştirmek için testler yaptım ve
+        ekosistemin yerel ihtiyaçlarını, Türk trader&apos;ların reflekslerini büyük bir sisteme entegre etmek için ter
+        döktüm.
       </p>
       <p className="mb-5">
-        Şu an aktif olarak iş aramıyorum, kendi ürünlerimi geliştirmenin tadını çıkarıyorum. Ancak vizyonuna inandığım,
-        heyecan verici bir hikayesi olan projelere kayıtsız kalamam.
+        <strong>Pixelcraft Studios (Aavegotchi):</strong> GameFi ve NFT mekaniklerinin, kullanıcı sadakati ve topluluk
+        psikolojisi üzerindeki etkisini bizzat yönettim. Token ekonomilerinin (tokenomics) sadece matematiksel bir tablo
+        olmadığını; enflasyon, ödül mekanizmaları ve merkeziyetsiz yönetişimin (DAO) bir araya gelerek nasıl yaşayan bir
+        oyun ekonomisi oluşturduğuna dair derin bir tecrübe kazandım.
       </p>
-      <p className="mb-5">Eğer aklınızda;</p>
-      <ul className="mb-5 list-disc pl-5">
-        <li>Web3 dinamiklerine hakim modern bir web projesi geliştirmek,</li>
-        <li>Botların değil, gerçek insanların konuştuğu organik bir topluluk kurmak,</li>
-        <li>Ya da projenizi doğru kitleyle buluşturacak bir büyüme stratejisi çizmek varsa...</li>
+      <p className="mb-5">
+        Kurucusu olduğum {grainzLink} ile de bu birikimi onlarca farklı Web3 projesinin büyüme yolculuğuna aktardım. Bir
+        projenin sıfırdan nasıl &quot;hype&quot; yaratacağını, botlardan arındırılmış gerçek toplulukların neye heyecanlanıp
+        neye tepki verdiğini ve geçici rüzgarlar yerine sürdürülebilir bir büyümenin nasıl kurgulanacağını sahada, krizleri
+        bizzat yöneterek öğrendim.
+      </p>
+
+      <h2 className="mb-4 mt-10 font-serif text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">
+        Evrim: Stratejiden Mimariye ve &quot;Builder&quot; Kimliğine
+      </h2>
+      <p className="mb-5">
+        Hikaye benim için hiçbir zaman tek bir noktada sabit kalmadı, aksine sürekli şekil değiştirdi. Zamanla kendimi
+        sadece strateji kuran, topluluğu yönlendiren tarafta değil; o stratejiyi teknik olarak sıfırdan hayata geçiren
+        tarafta buldum. Harika pazarlama stratejilerinin kötü arayüzler yüzünden çöp oluşunu defalarca gördükten sonra,
+        &quot;Neden bu deneyimi kendim inşa etmiyorum?&quot; dedim.
+      </p>
+      <p className="mb-5">
+        Mühendislik bakış açımı, topluluk yönetimi tecrübemle birleştirerek &quot;inşa edici&quot; (builder) kimliğimi ön plana
+        çıkardım. Bilgisayar mühendisliği altyapımı, sektörün pratik ihtiyaçlarıyla ve blockchain&apos;in teknik
+        sınırlarıyla harmanlıyorum. Bir projenin hem kod arkasındaki mimarisini kuruyor hem de son kullanıcıya nasıl
+        hissettireceğini hesaplıyorum. Bu süreçteki teknik çalışmalarımı, denemelerimi ve açık kaynaklı projelerimi
+        düzenli olarak GitHub profilimde paylaşıyor ve ekosisteme geri veriyorum.
+      </p>
+
+      <h2 className="mb-4 mt-10 font-serif text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">
+        Peki, Masaya Ne Getiriyorum?
+      </h2>
+      <p className="mb-5">
+        Beni Web3 dünyasında bir tür &quot;İsviçre Çakısı&quot; (Swiss Army Knife) gibi düşünebilirsiniz.
+      </p>
+      <p className="mb-5">
+        Sektörde genellikle keskin ve aşılması zor bir ayrım vardır: Yazılımcılar pazarlamanın dilinden, kullanıcı
+        psikolojisinden pek hoşlanmaz; pazarlamacılar ise kodun sınırlarından, akıllı sözleşmelerin teknik zorunluluklarından
+        bihaberdir. Ben ise tam bu iki dünyanın ortasında, köprü görevi gören bir noktada duruyorum.
+      </p>
+      <p className="mb-5">
+        <strong>Teknik Yetkinlik:</strong> Next.js, Tailwind CSS ve Solidity gibi modern teknolojileri kullanarak uçtan
+        uca ürünler geliştiriyorum. Amacım sadece &quot;çalışan&quot; bir kod yazmak değil; aynı zamanda şık, hızlı, SEO uyumlu
+        ve Web2 pürüzsüzlüğünde Web3 arayüzleri oluşturmak. Güvenliği merkeze alan akıllı sözleşmeler yazarak projelerin
+        temelini sağlamlaştırıyorum.
+      </p>
+      <p className="mb-5">
+        <strong>Analitik Güç ve On-Chain Vizyon:</strong> Bir yandan karmaşık teknik yapıları inşa ederken, diğer yandan o
+        yapıyı kullanacak kitlenin veri odaklı analizini yapabiliyorum. Piyasanın DeFi dinamiklerine —bir Full-time DeFi
+        Farmer perspektifiyle— son derece hakimim. Likidite havuzları, yield stratejileri ve on-chain hareketleri
+        okuyarak geliştirdiğimiz stratejilerin ekonomik olarak da mantıklı bir temele oturmasını sağlıyorum.
+      </p>
+
+      <h2 className="mb-4 mt-10 font-serif text-[22px] font-semibold leading-tight tracking-tight text-[var(--foreground)]">
+        Fikrinizi Gerçeğe Dönüştürelim
+      </h2>
+      <p className="mb-5">
+        Şu an aktif olarak bireysel bir iş arayışında değilim. LinkedIn üzerinde de görebileceğiniz üzere, tüm enerjimi
+        kendi projelerimi geliştirmeye ve {grainzStudioLink} çatısı altında teknoloji üretmeye ayırmış durumdayım.
+      </p>
+      <p className="mb-5">
+        Şimdilerde {grainzStudioLink} ile çok net bir misyon üstleniyoruz: Aklında harika bir fikir olan fakat bunu hayata
+        geçirmek için nereden başlayacağını bilmeyenlere uçtan uca destek oluyoruz. Sadece kağıt üzerinde kalmış
+        vizyonları alıp; teknik mimarisinden kodlamasına, büyüme (growth) stratejisinden pazarlamasına ve organik topluluk
+        inşasına kadar her alanda omuz omuza çalışarak nefes alan projelere dönüştürüyoruz. Vizyonuna inandığım, sektörde
+        kalıcı bir fark yaratmayı hedefleyen hiçbir iyi fikre kayıtsız kalamam.
+      </p>
+      <p className="mb-5">Eğer sizin de aklınızda;</p>
+      <ul className="mb-5 list-disc pl-5 space-y-2">
+        <li>
+          Web3 dinamiklerine ve DeFi mekaniklerine hakim, teknik altyapısı kusursuz ve estetik olarak etkileyici modern
+          bir web projesi geliştirmek,
+        </li>
+        <li>
+          Airdrop avcısı botların değil, vizyonu anlayan gerçek insanların konuştuğu, organik ve sadık bir topluluk
+          kurmak,
+        </li>
+        <li>
+          Ya da projenizi doğru kitleyle buluşturacak, kodun mantığıyla pazarın psikolojisini birleştiren hibrit (teknik +
+          pazarlama) bir büyüme stratejisi çizmek varsa...
+        </li>
       </ul>
       <p className="mb-5">
-        Ben buradayım. Sadece &quot;kod&quot; veya &quot;reklam&quot; için değil, projenin bütününü gören hibrit bir bakış açısıyla eksik
-        parçaları tamamlamak için konuşabiliriz.
+        Ben buradayım. Sadece bir parçayı tamamlamak için (&quot;kod yazmak&quot; veya &quot;reklam çıkmak&quot; için) değil; projenin
+        bütününü gören, eksikleri fark eden ve masaya o eksik parçaları tamamlayacak vizyonu koyan hibrit bir bakış
+        açısıyla konuşabiliriz.
       </p>
       <p className="mb-5">Tanıştığımıza memnun oldum!</p>
     </>
@@ -162,9 +249,9 @@ export default async function AboutPage({
 
   const en = (
     <>
-      <p className="mb-5">Hi, I’m Gökmen.</p>
+      <p className="mb-5">Hi, I'm Gökmen.</p>
       <p className="mb-5">
-        I entered the blockchain and crypto world in 2019. Since then, I haven’t just watched from the sidelines—I’ve
+        I entered the blockchain and crypto world in 2019. Since then, I haven't just watched from the sidelines—I've
         been in the kitchen, hands-on, at every point where technology meets people.
       </p>
       <p className="mb-5">
@@ -182,12 +269,12 @@ export default async function AboutPage({
         >
           GRAINZ
         </a>
-        , I’ve helped many Web3 projects grow—learning what creates hype from zero, what communities react to, and how
+        , I've helped many Web3 projects grow—learning what creates hype from zero, what communities react to, and how
         sustainable growth is built in the field.
       </p>
-      <p className="mb-5">But the story didn’t end there—it evolved.</p>
+      <p className="mb-5">But the story didn't end there—it evolved.</p>
       <p className="mb-5">
-        Lately, I’ve been happiest on the builder side. As an indie maker and developer, I turn ideas into code, ship
+        Lately, I've been happiest on the builder side. As an indie maker and developer, I turn ideas into code, ship
         MVPs, and publish. Ideation is fun, but shipping a working product is a different kind of satisfaction.
       </p>
       <p className="mb-5">What do I bring to the table?</p>
@@ -196,7 +283,7 @@ export default async function AboutPage({
         and also understand the psychology of the community using them.
       </p>
       <p className="mb-5">
-        I’m not actively job hunting right now—I’m enjoying building my own products. But I can’t ignore projects with a
+        I'm not actively job hunting right now—I'm enjoying building my own products. But I can't ignore projects with a
         vision and a compelling story.
       </p>
       <p className="mb-5">If you want to:</p>
@@ -205,7 +292,7 @@ export default async function AboutPage({
         <li>Grow an organic community where real people (not bots) talk,</li>
         <li>Design a growth strategy to reach the right audience…</li>
       </ul>
-      <p className="mb-5">I’m here. Let’s talk with a hybrid perspective that sees the whole product.</p>
+      <p className="mb-5">I'm here. Let's talk with a hybrid perspective that sees the whole product.</p>
       <p className="mb-5">Nice to meet you.</p>
     </>
   );
