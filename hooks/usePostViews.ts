@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { doc, getDoc, setDoc, increment, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc, increment, onSnapshot, collection, query, where, documentId, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export function usePostViews(slug: string, options: { increment?: boolean } = {}) {
@@ -54,4 +56,70 @@ export function usePostViews(slug: string, options: { increment?: boolean } = {}
   }, [slug, options.increment]);
 
   return views;
+}
+
+export function useBatchedPostViews(slugs: string[]) {
+  const [viewsMap, setViewsMap] = useState<Record<string, number>>({});
+
+  const slugsKey = slugs.join(',');
+
+  useEffect(() => {
+    if (!slugs || slugs.length === 0) return;
+
+    let isMounted = true;
+
+    // Filter out duplicates and empty slugs
+    const uniqueSlugs = Array.from(new Set(slugs.filter(Boolean)));
+    if (uniqueSlugs.length === 0) return;
+
+    const fetchViews = async () => {
+      const chunkSize = 30;
+      const chunks = [];
+      for (let i = 0; i < uniqueSlugs.length; i += chunkSize) {
+        chunks.push(uniqueSlugs.slice(i, i + chunkSize));
+      }
+
+      const newViewsMap: Record<string, number> = {};
+
+      try {
+        await Promise.all(chunks.map(async (chunk) => {
+          if (!isMounted) return;
+          const q = query(
+            collection(db, "views"),
+            where(documentId(), "in", chunk)
+          );
+          const querySnapshot = await getDocs(q);
+          if (!isMounted) return;
+
+          querySnapshot.forEach((doc) => {
+            newViewsMap[doc.id] = doc.data().count ?? 0;
+          });
+        }));
+
+        if (!isMounted) return;
+
+        // Initialize missing slugs to 0
+        uniqueSlugs.forEach(slug => {
+          if (newViewsMap[slug] === undefined) {
+            newViewsMap[slug] = 0;
+          }
+        });
+
+        setViewsMap(newViewsMap);
+      } catch (error) {
+        if (isMounted) {
+            console.error("Error fetching batched views:", error);
+        }
+      }
+    };
+
+    fetchViews();
+
+    return () => {
+        isMounted = false;
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slugsKey]);
+
+  return viewsMap;
 }
