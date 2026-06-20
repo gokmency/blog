@@ -56,8 +56,6 @@ function getHostsToTry() {
   ]);
 }
 
-const POSTS_PAGE_SIZE = 10;
-
 export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
   const hosts = getHostsToTry();
   const opts = { cache: "no-store" as RequestCache };
@@ -66,7 +64,7 @@ export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
     { host: string; first: number; after?: string | null }
   >(
     hosts,
-    (host) => ({ host, first: POSTS_PAGE_SIZE, after: null }),
+    (host) => ({ host, first: wanted, after: null }),
     GET_POSTS_PAGE,
     opts,
     (d) => Boolean(d.publication),
@@ -95,7 +93,7 @@ export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
     guard += 1;
     data = await hashnodeRequest<GetPostsPageData, { host: string; first: number; after: string }>(
       GET_POSTS_PAGE,
-      { host: hostToUse, first: POSTS_PAGE_SIZE, after: pageInfo.endCursor },
+      { host: hostToUse, first: Math.max(wanted - out.length, 1), after: pageInfo.endCursor },
       opts,
     );
     pushEdges();
