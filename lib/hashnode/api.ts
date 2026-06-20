@@ -60,7 +60,7 @@ const POSTS_PAGE_SIZE = 10;
 
 export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
   const hosts = getHostsToTry();
-  const opts = { cache: "no-store" as RequestCache };
+  const opts = { revalidate: 60 };
   const firstPage = await tryHosts<
     GetPostsPageData,
     { host: string; first: number; after?: string | null }

@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { unstable_noStore as noStore } from "next/cache";
 import { PostFeed } from "@/components/PostFeed";
 import { getRecentPosts } from "@/lib/hashnode/api";
 import { copy, type Lang } from "@/lib/i18n";
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -41,7 +38,6 @@ export default async function BlogPage({
 }: {
   params: { lang: Lang } | Promise<{ lang: Lang }>;
 }) {
-  noStore();
   const { lang } = await Promise.resolve(params);
   const t = copy[lang];
   const posts = await getRecentPosts(20);
