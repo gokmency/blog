@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { hashnodeRequest, type HashnodeRequestOptions } from "./client";
 import {
   GET_POST_BY_SLUG,
@@ -105,7 +106,7 @@ export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
   return out.slice(0, wanted);
 }
 
-export async function getPostBySlug(slug: string): Promise<HashnodePostWithContent | null> {
+export const getPostBySlug = cache(async (slug: string): Promise<HashnodePostWithContent | null> => {
   const hosts = getHostsToTry();
   const { data } = await tryHosts<GetPostBySlugData, { host: string; slug: string }>(
     hosts,
@@ -115,7 +116,7 @@ export async function getPostBySlug(slug: string): Promise<HashnodePostWithConte
     (d) => Boolean(d.publication),
   );
   return data.publication?.post ?? null;
-}
+});
 
 export async function getPublicationId(): Promise<string> {
   const hosts = getHostsToTry();
