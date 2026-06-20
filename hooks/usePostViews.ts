@@ -24,12 +24,9 @@ export function usePostViews(slug: string, options: { increment?: boolean } = {}
         if (options.increment) {
           await setDoc(docRef, { count: increment(1) }, { merge: true });
 
-          // 3. Ensure the UI shows the specific number from the database.
-          // Fetch again to get the updated value.
-          const updatedSnap = await getDoc(docRef);
-          if (updatedSnap.exists()) {
-            setViews(updatedSnap.data().count ?? 0);
-          }
+          // 3. Optimistically update the state to keep the UI responsive.
+          // The onSnapshot listener will keep it in sync with the server later.
+          setViews((prev) => (prev !== null ? prev + 1 : 1));
         }
       } catch (error) {
         // 4. Add a console.log for any Firebase permission errors.
