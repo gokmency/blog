@@ -56,7 +56,7 @@ function getHostsToTry() {
   ]);
 }
 
-const POSTS_PAGE_SIZE = 10;
+const POSTS_PAGE_SIZE = 50;
 
 export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
   const hosts = getHostsToTry();
