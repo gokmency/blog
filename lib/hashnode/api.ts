@@ -64,7 +64,7 @@ export async function getRecentPosts(first = 20): Promise<HashnodePost[]> {
     GET_POSTS,
     // Always fetch fresh for the blog list so newly published posts show up immediately on platforms
     // where ISR may behave like a build-time snapshot.
-    { cache: "no-store" },
+    { revalidate: 60 },
     (d) => Boolean(d.publication),
   );
   const edges = data.publication?.posts.edges ?? [];
