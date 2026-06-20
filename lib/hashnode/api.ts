@@ -29,6 +29,8 @@ function uniqueNonEmpty(values: Array<string | undefined | null>) {
   return out;
 }
 
+let successfulHostCache: string | null = null;
+
 async function tryHosts<TData, TVariables extends Record<string, unknown>>(
   hosts: string[],
   makeVars: (host: string) => TVariables,
@@ -36,14 +38,25 @@ async function tryHosts<TData, TVariables extends Record<string, unknown>>(
   options?: HashnodeRequestOptions,
   hasPublication?: (data: TData) => boolean,
 ): Promise<{ host: string; data: TData }> {
+  const hostsToTry = [...hosts];
+  if (successfulHostCache && hostsToTry.includes(successfulHostCache)) {
+    // Move the cached host to the front to try it first
+    const idx = hostsToTry.indexOf(successfulHostCache);
+    hostsToTry.splice(idx, 1);
+    hostsToTry.unshift(successfulHostCache);
+  }
+
   let lastData: TData | null = null;
-  for (const host of hosts) {
+  for (const host of hostsToTry) {
     const data = await hashnodeRequest<TData, TVariables>(query, makeVars(host), options);
     lastData = data;
-    if (!hasPublication || hasPublication(data)) return { host, data };
+    if (!hasPublication || hasPublication(data)) {
+      successfulHostCache = host;
+      return { host, data };
+    }
   }
   // If none matched, return the last response so caller can decide what to do.
-  return { host: hosts[hosts.length - 1] || "", data: lastData as TData };
+  return { host: hostsToTry[hostsToTry.length - 1] || "", data: lastData as TData };
 }
 
 function getHostsToTry() {
