@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { hashnodeRequest, type HashnodeRequestOptions } from "./client";
+import { scrapeRecentPosts, scrapePostBySlug } from "./scraper";
 import {
   GET_POST_BY_SLUG,
   GET_POST_SLUGS_PAGE,
@@ -36,15 +37,28 @@ async function tryHosts<TData, TVariables extends Record<string, unknown>>(
   query: string,
   options?: HashnodeRequestOptions,
   hasPublication?: (data: TData) => boolean,
-): Promise<{ host: string; data: TData }> {
+): Promise<{ host: string; data: TData } | null> {
   let lastData: TData | null = null;
+  let lastHost = "";
   for (const host of hosts) {
-    const data = await hashnodeRequest<TData, TVariables>(query, makeVars(host), options);
-    lastData = data;
-    if (!hasPublication || hasPublication(data)) return { host, data };
+    try {
+      const data = await hashnodeRequest<TData, TVariables>(query, makeVars(host), options);
+      lastData = data;
+      lastHost = host;
+      if (!hasPublication || hasPublication(data)) return { host, data };
+    } catch (err) {
+      console.error(`[Hashnode] Error querying host ${host}:`, err instanceof Error ? err.message : String(err));
+      // Continue trying other hosts
+    }
   }
-  // If none matched, return the last response so caller can decide what to do.
-  return { host: hosts[hosts.length - 1] || "", data: lastData as TData };
+
+  if (lastData) {
+    // If none matched the validation but we had a response, return the last one
+    return { host: lastHost, data: lastData };
+  }
+
+  // All hosts failed completely
+  return null;
 }
 
 function getHostsToTry() {
@@ -72,6 +86,12 @@ export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
     opts,
     (d) => Boolean(d.publication),
   );
+
+  if (!firstPage) {
+    console.log("[Hashnode] GraphQL API failed, falling back to scraper...");
+    return scrapeRecentPosts("gokmens");
+  }
+
   const hostToUse = firstPage.host;
   let data = firstPage.data;
   const out: HashnodePost[] = [];
@@ -94,13 +114,18 @@ export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
   let guard = 0;
   while (out.length < wanted && pageInfo?.hasNextPage && pageInfo.endCursor && guard < 20) {
     guard += 1;
-    data = await hashnodeRequest<GetPostsPageData, { host: string; first: number; after: string }>(
-      GET_POSTS_PAGE,
-      { host: hostToUse, first: POSTS_PAGE_SIZE, after: pageInfo.endCursor },
-      opts,
-    );
-    pushEdges();
-    pageInfo = data.publication?.posts.pageInfo;
+    try {
+      data = await hashnodeRequest<GetPostsPageData, { host: string; first: number; after: string }>(
+        GET_POSTS_PAGE,
+        { host: hostToUse, first: POSTS_PAGE_SIZE, after: pageInfo.endCursor },
+        opts,
+      );
+      pushEdges();
+      pageInfo = data.publication?.posts.pageInfo;
+    } catch (err) {
+      console.error(`[Hashnode] Error fetching paginated posts:`, err instanceof Error ? err.message : String(err));
+      break;
+    }
   }
 
   return out.slice(0, wanted);
@@ -108,27 +133,32 @@ export async function getRecentPosts(wanted = 20): Promise<HashnodePost[]> {
 
 export const getPostBySlug = cache(async (slug: string): Promise<HashnodePostWithContent | null> => {
   const hosts = getHostsToTry();
-  const { data } = await tryHosts<GetPostBySlugData, { host: string; slug: string }>(
+  const result = await tryHosts<GetPostBySlugData, { host: string; slug: string }>(
     hosts,
     (host) => ({ host, slug }),
     GET_POST_BY_SLUG,
     { revalidate: 60 },
     (d) => Boolean(d.publication),
   );
-  return data.publication?.post ?? null;
+  if (!result) {
+    console.log("[Hashnode] GraphQL API failed, falling back to scraper for post slug:", slug);
+    return scrapePostBySlug("gokmens", slug);
+  }
+  return result.data.publication?.post ?? null;
 });
 
 export async function getPublicationId(): Promise<string> {
   const hosts = getHostsToTry();
-  const { data, host } = await tryHosts<GetPublicationIdData, { host: string }>(
+  const result = await tryHosts<GetPublicationIdData, { host: string }>(
     hosts,
     (h) => ({ host: h }),
     GET_PUBLICATION_ID,
     { revalidate: 3600 },
     (d) => Boolean(d.publication?.id),
   );
-  const id = data.publication?.id;
-  if (!id) throw new Error(`Hashnode publication not found for host (tried: ${hosts.join(", ")}; last: ${host})`);
+  if (!result) throw new Error(`Hashnode publication not found for host (tried: ${hosts.join(", ")}) and no response could be retrieved`);
+  const id = result.data.publication?.id;
+  if (!id) throw new Error(`Hashnode publication not found for host (tried: ${hosts.join(", ")}; last: ${result.host})`);
   return id;
 }
 
@@ -150,6 +180,11 @@ export async function getAllPostsForSitemap(
     options,
     (d) => Boolean(d.publication),
   );
+
+  if (!firstPage) {
+    const posts = await scrapeRecentPosts("gokmens");
+    return posts.map(p => ({ slug: p.slug, publishedAt: p.publishedAt }));
+  }
 
   const hostToUse = firstPage.host;
   let data = firstPage.data;
@@ -173,13 +208,18 @@ export async function getAllPostsForSitemap(
   let guard = 0;
   while (pageInfo?.hasNextPage && pageInfo.endCursor && guard < 100) {
     guard += 1;
-    data = await hashnodeRequest<GetPostSlugsPageData, { host: string; first: number; after: string }>(
-      GET_POST_SLUGS_PAGE,
-      { host: hostToUse, first: pageSize, after: pageInfo.endCursor },
-      options,
-    );
-    pushEdges(data);
-    pageInfo = data.publication?.posts.pageInfo;
+    try {
+      data = await hashnodeRequest<GetPostSlugsPageData, { host: string; first: number; after: string }>(
+        GET_POST_SLUGS_PAGE,
+        { host: hostToUse, first: pageSize, after: pageInfo.endCursor },
+        options,
+      );
+      pushEdges(data);
+      pageInfo = data.publication?.posts.pageInfo;
+    } catch (err) {
+      console.error(`[Hashnode] Error fetching paginated sitemap slugs:`, err instanceof Error ? err.message : String(err));
+      break;
+    }
   }
 
   return out;
