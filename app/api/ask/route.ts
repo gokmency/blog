@@ -10,9 +10,11 @@ function rateLimit(key: string, limit: number, windowMs: number) {
 
   // Clean up old entries periodically.
   if (now > lastCleanup + windowMs * 10) {
-    for (const [key, b] of buckets.entries()) {
+    for (const [k, b] of buckets.entries()) {
       if (now > b.resetAt) {
-        buckets.delete(key);
+        buckets.delete(k);
+      } else {
+        break; // Map maintains insertion order; first non-expired entry means rest are also valid.
       }
     }
     lastCleanup = now;
@@ -20,6 +22,7 @@ function rateLimit(key: string, limit: number, windowMs: number) {
 
   const b = buckets.get(key);
   if (!b || now > b.resetAt) {
+    if (b) buckets.delete(key); // Re-insert to maintain chronological order of resetAt
     buckets.set(key, { count: 1, resetAt: now + windowMs });
     return { ok: true, remaining: limit - 1 };
   }
