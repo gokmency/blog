@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getRecentPosts } from "@/lib/hashnode/api";
+import { getAllPostsForSitemap } from "@/lib/hashnode/api";
 
 function getSiteUrl() {
   const raw =
@@ -16,7 +16,7 @@ export default async function (): Promise<MetadataRoute.Sitemap> {
 
   let posts: Array<{ slug: string; publishedAt?: string }> = [];
   try {
-    posts = (await getRecentPosts(50)).map((p) => ({ slug: p.slug, publishedAt: p.publishedAt }));
+    posts = await getAllPostsForSitemap();
   } catch {
     // If Hashnode is temporarily unavailable, still return static routes.
     posts = [];
